@@ -426,18 +426,38 @@ $(document).ready(function () {
                 evaluateDynamicQuoteButtons();
             });
 
-            // ---------------------------------------------------------
-            // Modal Dirty-State Protection Helpers
-            // ---------------------------------------------------------
+            // Clear entrance animation once completed so it never collides with pulse feedback
+            $(document).on('animationend', '.monolith-modal-card', function (e) {
+                if (e.originalEvent && e.originalEvent.animationName === 'modalScaleIn') {
+                    $(this).css('animation', 'none');
+                }
+            });
+
+            function openModal(modalSelector) {
+                const modal = $(modalSelector);
+                modal.find('.monolith-modal-card').removeClass('modal-static-pulse').css('animation', '');
+                modal.addClass('is-active');
+            }
+
             function pulseModalCard(modalSelector) {
                 const card = $(modalSelector).find('.monolith-modal-card');
                 if (!card.length) return;
+                
+                // Ensure entrance animation is explicitly inactive
+                card.css('animation', 'none');
                 card.removeClass('modal-static-pulse');
-                void card[0].offsetWidth; // Trigger DOM reflow to restart CSS animation
-                card.addClass('modal-static-pulse');
-                setTimeout(function() {
-                    card.removeClass('modal-static-pulse');
-                }, 250);
+                
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () {
+                        card.addClass('modal-static-pulse');
+                        card.one('animationend', function (e) {
+                            if (e.originalEvent && e.originalEvent.animationName === 'modalStaticPulse') {
+                                card.removeClass('modal-static-pulse');
+                                card.css('animation', 'none');
+                            }
+                        });
+                    });
+                });
             }
 
             function isQuoteFormDirty() {
@@ -485,7 +505,7 @@ $(document).ready(function () {
                 $('#quoteModal').data('initial-desc', existingDesc ? String(existingDesc).trim() : '');
                 
                 $('#quoteModalTitle').text(existingAmount ? 'Edit Quotation Price' : 'Set Quotation Price');
-                $('#quoteModal').addClass('is-active');
+                openModal('#quoteModal');
             });
 
             $('.dismiss-quote-modal').on('click', function() {
@@ -590,7 +610,7 @@ $(document).ready(function () {
                 $('#rescheduleModal').data('initial-time', timePart);
                 
                 $('#rescheduleReason').val('');
-                $('#rescheduleModal').addClass('is-active');
+                openModal('#rescheduleModal');
             });
 
             $('.dismiss-reschedule-modal').on('click', function() {
@@ -763,7 +783,7 @@ $(document).ready(function () {
                     $('#newBlackoutDate').val('');
                 }
                 $('#newBlackoutReason').val('');
-                $('#blackoutModal').addClass('is-active');
+                openModal('#blackoutModal');
             });
 
             $('.dismiss-blackout-modal').on('click', function() {
@@ -850,20 +870,20 @@ $(document).ready(function () {
                 
                 // Hide blackout modal temporarily
                 $('#blackoutModal').removeClass('is-active');
-                $('#deleteBlackoutModal').addClass('is-active');
+                openModal('#deleteBlackoutModal');
             });
 
             $('.dismiss-delete-blackout').on('click', function() {
                 $('#deleteBlackoutModal').removeClass('is-active');
                 // Re-open blackout modal
-                $('#blackoutModal').addClass('is-active');
+                openModal('#blackoutModal');
             });
 
             // Dismiss delete confirmation on backdrop click (return to blackout modal)
             $('#deleteBlackoutModal').on('click', function(e) {
                 if ($(e.target).is('#deleteBlackoutModal')) {
                     $('#deleteBlackoutModal').removeClass('is-active');
-                    $('#blackoutModal').addClass('is-active');
+                    openModal('#blackoutModal');
                 }
             });
 
@@ -889,10 +909,10 @@ $(document).ready(function () {
                         
                         if (res && res.success) {
                             loadBlackoutDates();
-                            $('#blackoutModal').addClass('is-active');
+                            openModal('#blackoutModal');
                         } else {
                             showAjaxErrorBanner(res.message || 'Failed to remove date.');
-                            $('#blackoutModal').addClass('is-active');
+                            openModal('#blackoutModal');
                         }
                     },
                     error: function() {
@@ -1259,7 +1279,7 @@ $(document).ready(function () {
                 extLink.attr('href', docUrl);
                 filenameLabel.text(docName ? docName.split('/').pop() : 'Attached File');
 
-                modal.addClass('is-active');
+                openModal('#documentPreviewModal');
 
                 const isPdf = docName.toLowerCase().endsWith('.pdf') || docUrl.toLowerCase().includes('.pdf');
 
@@ -1319,7 +1339,7 @@ $(document).ready(function () {
 
                     if ($('#deleteBlackoutModal').hasClass('is-active')) {
                         $('#deleteBlackoutModal').removeClass('is-active');
-                        $('#blackoutModal').addClass('is-active');
+                        openModal('#blackoutModal');
                         return;
                     }
 

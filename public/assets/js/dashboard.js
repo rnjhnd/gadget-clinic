@@ -717,6 +717,19 @@ $(document).ready(function () {
             });
 
             // -------------------------------------------------------------
+            // Clear entrance animation once completed to prevent style collisions
+            $(document).on('animationend', '.monolith-modal-card', function (e) {
+                if (e.originalEvent && e.originalEvent.animationName === 'modalScaleIn') {
+                    $(this).css('animation', 'none');
+                }
+            });
+
+            function openDashboardModal(modalSelector) {
+                const modal = $(modalSelector);
+                modal.find('.monolith-modal-card').removeClass('modal-static-pulse').css('animation', '');
+                modal.addClass('is-active');
+            }
+
             // Custom Monolith Modal for Appointment Cancellation
             // -------------------------------------------------------------
             function closeCancelModal() {
@@ -737,7 +750,7 @@ $(document).ready(function () {
                 } else {
                     $('#cancelModalSubtext').text('Are you sure you want to cancel this appointment? This action cannot be undone.');
                 }
-                $('#cancelConfirmModal').addClass('is-active');
+                openDashboardModal('#cancelConfirmModal');
             });
 
             $(document).on('click', '.dismiss-cancel-modal', function (e) {
@@ -779,7 +792,7 @@ $(document).ready(function () {
                 $('#viewQuoteAmount').text('PHP ' + parseFloat(amount).toLocaleString('en-US', {minimumFractionDigits: 2}));
                 $('#viewQuoteDescription').text(desc);
 
-                $('#viewQuoteModal').addClass('is-active');
+                openDashboardModal('#viewQuoteModal');
             });
 
             function closeViewQuoteModal() {
@@ -901,7 +914,7 @@ $(document).ready(function () {
                 extLink.attr('href', docUrl);
                 filenameLabel.text(docName ? docName.split('/').pop() : 'Attached File');
 
-                modal.addClass('is-active');
+                openDashboardModal('#documentPreviewModal');
 
                 const isPdf = docName.toLowerCase().endsWith('.pdf') || docUrl.toLowerCase().includes('.pdf');
 

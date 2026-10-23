@@ -527,6 +527,9 @@
             max-width: 440px;
             width: 100%;
             padding: 24px;
+        }
+
+        .monolith-modal-overlay.is-active .monolith-modal-card {
             animation: modalScaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -542,7 +545,7 @@
         }
 
         .monolith-modal-card.modal-static-pulse {
-            animation: modalStaticPulse 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            animation: modalStaticPulse 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
 
         .modal-header-row {
