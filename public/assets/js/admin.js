@@ -94,6 +94,7 @@ $(document).ready(function () {
                             fetchAndRenderAdminSlots(dateStr);
                         }
                     }
+                };
                 flatpickr("#rescheduleDate", dateConfig);
 
                 const blackoutDateConfig = Object.assign({}, dateConfig, {
