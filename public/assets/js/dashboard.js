@@ -44,17 +44,47 @@ $(document).ready(function () {
                 }
             });
 
-            // Interactive File Input feedback
+            // Interactive File Input feedback with delete/clear capability
             const fileInput = document.getElementById('fileInput');
+            const fileBoxDefaultContent = document.getElementById('fileBoxDefaultContent');
+            const fileSelectedChip = document.getElementById('fileSelectedChip');
             const fileNameDisplay = document.getElementById('fileNameDisplay');
+            const fileSizeDisplay = document.getElementById('fileSizeDisplay');
+            const removeFileBtn = document.getElementById('removeFileBtn');
+
+            function formatFileSize(bytes) {
+                if (bytes < 1024) return bytes + ' B';
+                if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+                return (bytes / 1048576).toFixed(1) + ' MB';
+            }
+
+            function clearSelectedFile() {
+                if (fileInput) fileInput.value = '';
+                if (fileNameDisplay) fileNameDisplay.textContent = '';
+                if (fileSizeDisplay) fileSizeDisplay.textContent = '';
+                if (fileSelectedChip) fileSelectedChip.style.display = 'none';
+                if (fileBoxDefaultContent) fileBoxDefaultContent.style.display = 'block';
+            }
+
             if (fileInput) {
                 fileInput.addEventListener('change', function () {
                     if (this.files && this.files.length > 0) {
-                        fileNameDisplay.textContent = 'Selected: ' + this.files[0].name;
-                        fileNameDisplay.style.display = 'block';
+                        const file = this.files[0];
+                        if (fileNameDisplay) fileNameDisplay.textContent = file.name;
+                        if (fileSizeDisplay) fileSizeDisplay.textContent = '(' + formatFileSize(file.size) + ')';
+                        if (fileBoxDefaultContent) fileBoxDefaultContent.style.display = 'none';
+                        if (fileSelectedChip) fileSelectedChip.style.display = 'flex';
                     } else {
-                        fileNameDisplay.style.display = 'none';
+                        clearSelectedFile();
                     }
+                });
+            }
+
+            if (removeFileBtn) {
+                removeFileBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    clearSelectedFile();
                 });
             }
 

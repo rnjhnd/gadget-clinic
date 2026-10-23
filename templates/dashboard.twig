@@ -252,9 +252,26 @@
                         <label>Upload Photo of Damage or Warranty (Optional)</label>
                         <div class="file-upload-box" id="fileUploadContainer">
                             <input type="file" name="document" id="fileInput" accept=".jpg,.jpeg,.png,.pdf">
-                            <div class="file-box-text">Choose file or drag & drop</div>
-                            <div class="file-box-sub">PDF, PNG, JPG up to 5MB</div>
-                            <div class="file-selected-name" id="fileNameDisplay"></div>
+                            <div class="file-box-default" id="fileBoxDefaultContent">
+                                <div class="file-box-text">Choose file or drag & drop</div>
+                                <div class="file-box-sub">PDF, PNG, JPG up to 5MB</div>
+                            </div>
+                            <div class="file-selected-chip" id="fileSelectedChip" style="display: none;">
+                                <div class="file-info-group">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                    </svg>
+                                    <span class="file-selected-name" id="fileNameDisplay"></span>
+                                    <span class="file-selected-size" id="fileSizeDisplay"></span>
+                                </div>
+                                <button type="button" class="btn-remove-attachment" id="removeFileBtn" title="Remove attachment" aria-label="Remove attachment">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
