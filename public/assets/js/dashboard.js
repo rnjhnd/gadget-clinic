@@ -533,23 +533,39 @@ $(document).ready(function () {
                 return true;
             }
 
+            // "Reward Early, Punish Late" Validation Pattern:
+            // 1. Format keystrokes smoothly while typing without yelling errors.
+            // 2. If an error is already active and the user completes the 11 digits, clear it instantly.
             phoneInput.on('input', function () {
                 const currentVal = $(this).val();
                 const formatted = formatPhoneNumber(currentVal);
                 if (currentVal !== formatted) {
                     $(this).val(formatted);
                 }
-                if ($(this).val().length >= 4) {
+
+                const digits = $(this).val().replace(/\D/g, '');
+
+                // Reward early: clear active error the moment 11 valid digits are reached
+                if (phoneInput.hasClass('is-invalid')) {
+                    if (digits.startsWith('09') && digits.length === 11) {
+                        phoneInput.removeClass('is-invalid');
+                        phoneErrorMsg.hide();
+                        phoneInputHint.show();
+                    }
+                }
+            });
+
+            // Punish late: only check for incompleteness once the user leaves the field
+            phoneInput.on('blur', function () {
+                const raw = $(this).val().trim();
+                if (raw.length > 0) {
                     validatePhoneNumber();
                 } else {
+                    // Reset to neutral hint if left completely blank
                     phoneInput.removeClass('is-invalid');
                     phoneErrorMsg.hide();
                     phoneInputHint.show();
                 }
-            });
-
-            phoneInput.on('blur', function () {
-                validatePhoneNumber();
             });
 
             // Form Submit Guard: Ensure valid phone & time slot
