@@ -449,6 +449,13 @@ $(document).ready(function () {
                 $('#quoteModal').removeClass('is-active');
             });
 
+            // Dismiss quote modal on backdrop click
+            $('#quoteModal').on('click', function(e) {
+                if ($(e.target).is('#quoteModal')) {
+                    $('#quoteModal').removeClass('is-active');
+                }
+            });
+
             $('#issueQuoteForm').on('submit', function(e) {
                 e.preventDefault();
                 
@@ -531,6 +538,13 @@ $(document).ready(function () {
 
             $('.dismiss-reschedule-modal').on('click', function() {
                 $('#rescheduleModal').removeClass('is-active');
+            });
+
+            // Dismiss reschedule modal on backdrop click
+            $('#rescheduleModal').on('click', function(e) {
+                if ($(e.target).is('#rescheduleModal')) {
+                    $('#rescheduleModal').removeClass('is-active');
+                }
             });
 
             $('#rescheduleForm').on('submit', function(e) {
@@ -692,6 +706,13 @@ $(document).ready(function () {
                 $('#blackoutModal').removeClass('is-active');
             });
 
+            // Dismiss blackout modal on backdrop click
+            $('#blackoutModal').on('click', function(e) {
+                if ($(e.target).is('#blackoutModal')) {
+                    $('#blackoutModal').removeClass('is-active');
+                }
+            });
+
             $('#addBlackoutForm').on('submit', function(e) {
                 e.preventDefault();
                 
@@ -761,6 +782,14 @@ $(document).ready(function () {
                 $('#deleteBlackoutModal').removeClass('is-active');
                 // Re-open blackout modal
                 $('#blackoutModal').addClass('is-active');
+            });
+
+            // Dismiss delete confirmation on backdrop click (return to blackout modal)
+            $('#deleteBlackoutModal').on('click', function(e) {
+                if ($(e.target).is('#deleteBlackoutModal')) {
+                    $('#deleteBlackoutModal').removeClass('is-active');
+                    $('#blackoutModal').addClass('is-active');
+                }
             });
 
             $('#deleteBlackoutForm').on('submit', function(e) {
@@ -1200,9 +1229,39 @@ $(document).ready(function () {
                 }
             });
 
+            // Global Escape key handler for all modal dialogs
             $(document).on('keydown', function (e) {
-                if (e.key === 'Escape' && $('#documentPreviewModal').hasClass('is-active')) {
-                    closeDocPreviewModal();
+                if (e.key === 'Escape') {
+                    // Let Flatpickr handle closing its own calendar dropdown first if open
+                    if ($('.flatpickr-calendar.open').length > 0) {
+                        return;
+                    }
+
+                    if ($('#documentPreviewModal').hasClass('is-active')) {
+                        closeDocPreviewModal();
+                        return;
+                    }
+
+                    if ($('#deleteBlackoutModal').hasClass('is-active')) {
+                        $('#deleteBlackoutModal').removeClass('is-active');
+                        $('#blackoutModal').addClass('is-active');
+                        return;
+                    }
+
+                    if ($('#blackoutModal').hasClass('is-active')) {
+                        $('#blackoutModal').removeClass('is-active');
+                        return;
+                    }
+
+                    if ($('#rescheduleModal').hasClass('is-active')) {
+                        $('#rescheduleModal').removeClass('is-active');
+                        return;
+                    }
+
+                    if ($('#quoteModal').hasClass('is-active')) {
+                        $('#quoteModal').removeClass('is-active');
+                        return;
+                    }
                 }
             });
 
