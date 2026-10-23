@@ -1643,6 +1643,13 @@ body {
             border-bottom-color: var(--border) !important;
         }
 
+        .flatpickr-calendar.arrowBottom:before,
+        .flatpickr-calendar.arrowBottom:after,
+        .flatpickr-calendar.arrow_bottom:before,
+        .flatpickr-calendar.arrow_bottom:after {
+            border-top-color: var(--border) !important;
+        }
+
         .flatpickr-months {
             position: relative !important;
             padding: 16px 8px 15px 8px !important;
