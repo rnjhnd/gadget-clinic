@@ -98,8 +98,7 @@ $(document).ready(function () {
                 flatpickr("#rescheduleDate", dateConfig);
 
                 const blackoutDateConfig = Object.assign({}, dateConfig, {
-                    altFormat: "M j, Y",
-                    position: "above"
+                    altFormat: "M j, Y"
                 });
                 flatpickr("#newBlackoutDate", blackoutDateConfig);
             }

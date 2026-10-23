@@ -461,24 +461,9 @@
                 </div>
             </div>
             
-            <div class="blackout-list-container" style="margin-bottom: 24px; max-height: 200px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 8px;">
-                <table style="width: 100%; border-collapse: collapse; font-size: 13px;" id="blackoutTable">
-                    <thead>
-                        <tr style="border-bottom: 1px solid var(--border); color: var(--text-muted); text-align: left;">
-                            <th style="padding: 8px; font-weight: 600;">Date</th>
-                            <th style="padding: 8px; font-weight: 600;">Reason</th>
-                            <th style="padding: 8px; font-weight: 600; text-align: right;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Populated by JS -->
-                    </tbody>
-                </table>
-            </div>
-
-            <form id="addBlackoutForm" novalidate style="border-top: 1px solid var(--border); padding-top: 16px;">
-                <h4 style="font-size: 13px; font-weight: 600; margin-bottom: 12px;">Add New Blackout Date</h4>
-                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-bottom: 16px;">
+            <form id="addBlackoutForm" novalidate style="margin-bottom: 20px;">
+                <h4 style="font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--text-primary);">Add New Blackout Date</h4>
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-bottom: 12px;">
                     <div class="date-input-wrapper" style="position: relative;">
                         <input type="text" name="date" id="newBlackoutDate" class="modal-input date-picker-input" placeholder="Select Date" required style="padding-left: 36px;">
                         <svg class="calendar-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none;">
@@ -492,11 +477,32 @@
                         <input type="text" name="reason" id="newBlackoutReason" class="modal-input" required placeholder="Reason (e.g. Holiday)">
                     </div>
                 </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-modal-secondary dismiss-blackout-modal">Close</button>
+                <div style="display: flex; justify-content: flex-end;">
                     <button type="submit" class="btn-modal-primary">Add Date</button>
                 </div>
             </form>
+
+            <div style="border-top: 1px solid var(--border); padding-top: 16px;">
+                <h4 style="font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--text-primary);">Upcoming Blackout Dates</h4>
+                <div class="blackout-list-container" style="margin-bottom: 20px; max-height: 180px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 8px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;" id="blackoutTable">
+                        <thead>
+                            <tr style="border-bottom: 1px solid var(--border); color: var(--text-muted); text-align: left;">
+                                <th style="padding: 8px; font-weight: 600;">Date</th>
+                                <th style="padding: 8px; font-weight: 600;">Reason</th>
+                                <th style="padding: 8px; font-weight: 600; text-align: right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-modal-secondary dismiss-blackout-modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 
