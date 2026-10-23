@@ -52,6 +52,8 @@ $(document).ready(function () {
             const fileSizeDisplay = document.getElementById('fileSizeDisplay');
             const removeFileBtn = document.getElementById('removeFileBtn');
 
+            const fileErrorMsg = $('#fileErrorMsg');
+
             function formatFileSize(bytes) {
                 if (bytes < 1024) return bytes + ' B';
                 if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
@@ -70,6 +72,16 @@ $(document).ready(function () {
                 fileInput.addEventListener('change', function () {
                     if (this.files && this.files.length > 0) {
                         const file = this.files[0];
+                        const maxBytes = 5 * 1024 * 1024; // 5MB limit
+                        if (file.size > maxBytes) {
+                            if (fileErrorMsg.length) {
+                                fileErrorMsg.find('span').text('File exceeds 5MB limit (' + formatFileSize(file.size) + ' selected). Please choose a smaller photo or PDF.');
+                                fileErrorMsg.show();
+                            }
+                            clearSelectedFile();
+                            return;
+                        }
+                        if (fileErrorMsg.length) fileErrorMsg.hide();
                         if (fileNameDisplay) fileNameDisplay.textContent = file.name;
                         if (fileSizeDisplay) fileSizeDisplay.textContent = '(' + formatFileSize(file.size) + ')';
                         if (fileBoxDefaultContent) fileBoxDefaultContent.style.display = 'none';
@@ -599,6 +611,17 @@ $(document).ready(function () {
                     e.preventDefault();
                     return false;
                 }
+
+                // Tactile feedback: lock submit button and show spinner to prevent duplicate submissions
+                const submitBtn = $('#bookingSubmitBtn');
+                submitBtn.prop('disabled', true).addClass('is-loading');
+                submitBtn.find('.btn-text').text('Processing Drop-off...');
+                submitBtn.find('.btn-icon').replaceWith(`
+                    <svg class="btn-spinner" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+                        <path d="M12 2a10 10 0 0 1 10 10"></path>
+                    </svg>
+                `);
             });
 
             // -------------------------------------------------------------
@@ -725,8 +748,29 @@ $(document).ready(function () {
                 $('#viewQuoteModal').addClass('is-active');
             });
 
-            $('.dismiss-view-quote-modal').on('click', function() {
+            function closeViewQuoteModal() {
                 $('#viewQuoteModal').removeClass('is-active');
+            }
+
+            $('.dismiss-view-quote-modal').on('click', closeViewQuoteModal);
+
+            // Close quote modal on backdrop click
+            $('#viewQuoteModal').on('click', function(e) {
+                if ($(e.target).is('#viewQuoteModal')) {
+                    closeViewQuoteModal();
+                }
+            });
+
+            // Global Escape key handler for all modal dialogs
+            $(document).on('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    if ($('#viewQuoteModal').hasClass('is-active')) {
+                        closeViewQuoteModal();
+                    }
+                    if ($('#cancelConfirmModal').hasClass('is-active')) {
+                        closeCancelModal();
+                    }
+                }
             });
 
             // Kebab Menu Toggle Logic

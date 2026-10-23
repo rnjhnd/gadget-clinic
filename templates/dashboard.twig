@@ -273,11 +273,19 @@
                                 </button>
                             </div>
                         </div>
+                        <div class="field-error-msg" id="fileErrorMsg" style="display: none; margin-top: 8px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <span>File size exceeds the 5MB limit. Please choose a smaller photo or PDF.</span>
+                        </div>
                     </div>
 
-                    <button type="submit" name="submit_request" class="btn-monolith-primary">
-                        <span>Submit Request</span>
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <button type="submit" name="submit_request" class="btn-monolith-primary" id="bookingSubmitBtn">
+                        <span class="btn-text">Submit Request</span>
+                        <svg class="btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
                         </svg>
@@ -412,6 +420,19 @@
                                                     </button>
                                                 {% endif %}
                                             </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 48px 24px;">
+                                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+                                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-faint); margin-bottom: 4px;">
+                                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                                            </svg>
+                                            <span style="font-weight: 600; font-size: 14px; color: var(--text-primary);">No repair bookings yet</span>
+                                            <span style="font-size: 12.5px; color: var(--text-secondary); max-width: 320px;">Use the form on the left to schedule your first device drop-off consultation.</span>
                                         </div>
                                     </td>
                                 </tr>

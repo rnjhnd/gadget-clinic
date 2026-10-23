@@ -1651,6 +1651,24 @@
             transform: translateY(0);
         }
 
+        .btn-monolith-primary:disabled,
+        .btn-monolith-primary.is-loading {
+            opacity: 0.75;
+            cursor: not-allowed;
+            pointer-events: none;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-spinner {
+            animation: btnSpin 0.75s linear infinite;
+        }
+
+        @keyframes btnSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
         /* Unified Controls Toolbar: Status Pills (Left) + Search (Right) */
         .table-toolbar {
             display: flex;
