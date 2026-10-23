@@ -1669,6 +1669,48 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Dedicated Empty State Card for Zero Bookings */
+        .empty-registry-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 56px 24px;
+            text-align: center;
+            background: var(--bg-canvas);
+            border: 1px dashed var(--border-hover);
+            border-radius: var(--radius-md);
+            margin: 8px 0 16px;
+        }
+
+        .empty-registry-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: var(--radius-pill);
+            background: var(--bg-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+            border: 1px solid var(--border);
+        }
+
+        .empty-registry-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            letter-spacing: -0.01em;
+        }
+
+        .empty-registry-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            max-width: 340px;
+            line-height: 1.5;
+        }
+
         /* Unified Controls Toolbar: Status Pills (Left) + Search (Right) */
         .table-toolbar {
             display: flex;

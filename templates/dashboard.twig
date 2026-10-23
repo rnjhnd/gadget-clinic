@@ -301,33 +301,45 @@
                     <p class="card-desc">Review your scheduled timeline, documents, and download digital drop-off stubs.</p>
                 </div>
 
-                <!-- Unified Controls Toolbar: Status Pills (Left) + Search (Right) -->
-                <div class="table-toolbar">
-                    <div class="filter-segmented-bar" role="tablist">
-                        <button type="button" class="tab-pill active" data-status="">
-                            <span>All</span>
-                            <span class="pill-counter" id="tab-count-all">{{ total_count }}</span>
-                        </button>
-                        <button type="button" class="tab-pill" data-status="pending">
-                            <span>Pending</span>
-                            <span class="pill-counter" id="tab-count-pending">{{ pending_count }}</span>
-                        </button>
-                        <button type="button" class="tab-pill" data-status="confirmed">
-                            <span>Confirmed</span>
-                            <span class="pill-counter" id="tab-count-confirmed">{{ confirmed_count }}</span>
-                        </button>
-                        <button type="button" class="tab-pill" data-status="cancelled">
-                            <span>Cancelled</span>
-                            <span class="pill-counter" id="tab-count-cancelled">{{ cancelled_count }}</span>
-                        </button>
+                {% if all_requests is empty %}
+                    <div class="empty-registry-state">
+                        <div class="empty-registry-icon">
+                            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                            </svg>
+                        </div>
+                        <h3 class="empty-registry-title">No repair bookings yet</h3>
+                        <p class="empty-registry-desc">Select your repair service, choose an open drop-off slot on the left, and submit your first consultation request.</p>
+                    </div>
+                {% else %}
+                    <!-- Unified Controls Toolbar: Status Pills (Left) + Search (Right) -->
+                    <div class="table-toolbar">
+                        <div class="filter-segmented-bar" role="tablist">
+                            <button type="button" class="tab-pill active" data-status="">
+                                <span>All</span>
+                                <span class="pill-counter" id="tab-count-all">{{ total_count }}</span>
+                            </button>
+                            <button type="button" class="tab-pill" data-status="pending">
+                                <span>Pending</span>
+                                <span class="pill-counter" id="tab-count-pending">{{ pending_count }}</span>
+                            </button>
+                            <button type="button" class="tab-pill" data-status="confirmed">
+                                <span>Confirmed</span>
+                                <span class="pill-counter" id="tab-count-confirmed">{{ confirmed_count }}</span>
+                            </button>
+                            <button type="button" class="tab-pill" data-status="cancelled">
+                                <span>Cancelled</span>
+                                <span class="pill-counter" id="tab-count-cancelled">{{ cancelled_count }}</span>
+                            </button>
+                        </div>
+
+                        <div class="table-search-box">
+                            <input type="search" id="dashboardSearchInput" placeholder="Search requests..." autocomplete="off">
+                        </div>
                     </div>
 
-                    <div class="table-search-box">
-                        <input type="search" id="dashboardSearchInput" placeholder="Search requests..." autocomplete="off">
-                    </div>
-                </div>
-
-                <table id="sortableTable" class="studio-table">
+                    <table id="sortableTable" class="studio-table">
                         <thead>
                             <tr>
                                 <th style="text-align: left; width: 26%;">Schedule</th>
@@ -423,22 +435,10 @@
                                         </div>
                                     </td>
                                 </tr>
-                            {% else %}
-                                <tr>
-                                    <td colspan="5" style="text-align: center; padding: 48px 24px;">
-                                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
-                                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-faint); margin-bottom: 4px;">
-                                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-                                            </svg>
-                                            <span style="font-weight: 600; font-size: 14px; color: var(--text-primary);">No repair bookings yet</span>
-                                            <span style="font-size: 12.5px; color: var(--text-secondary); max-width: 320px;">Use the form on the left to schedule your first device drop-off consultation.</span>
-                                        </div>
-                                    </td>
-                                </tr>
                             {% endfor %}
                         </tbody>
                     </table>
+                {% endif %}
             </section>
 
         </div>

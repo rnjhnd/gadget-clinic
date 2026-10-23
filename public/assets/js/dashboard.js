@@ -4,45 +4,49 @@ $(document).ready(function () {
                 $('.alert-success').fadeOut(500, function() { $(this).remove(); });
             }, 5000);
 
-            // Initialize User Appointments Ledger DataTable with 2-state toggle sorting
-            let userTable = new DataTable('#sortableTable', {
-                order: [[0, 'desc']], // Most upcoming/recent schedule first
-                pageLength: 8,
-                lengthChange: false,
-                layout: {
-                    topStart: null,
-                    topEnd: null
-                },
-                language: {
-                    search: "",
-                    searchPlaceholder: "Search reservations...",
-                    zeroRecords: "No matching reservations located."
-                },
-                columnDefs: [
-                    { targets: '_all', orderSequence: ['asc', 'desc'] },
-                    { targets: 0, orderSequence: ['desc', 'asc'] },
-                    { targets: [2, 4], orderable: false } // Document & Actions non-sortable
-                ]
-            });
+            // Initialize User Appointments Ledger DataTable if table exists
+            const tableElem = document.getElementById('sortableTable');
+            let userTable = null;
+            if (tableElem) {
+                userTable = new DataTable('#sortableTable', {
+                    order: [[0, 'desc']], // Most upcoming/recent schedule first
+                    pageLength: 8,
+                    lengthChange: false,
+                    layout: {
+                        topStart: null,
+                        topEnd: null
+                    },
+                    language: {
+                        search: "",
+                        searchPlaceholder: "Search reservations...",
+                        zeroRecords: "No matching reservations located."
+                    },
+                    columnDefs: [
+                        { targets: '_all', orderSequence: ['asc', 'desc'] },
+                        { targets: 0, orderSequence: ['desc', 'asc'] },
+                        { targets: [2, 4], orderable: false } // Document & Actions non-sortable
+                    ]
+                });
 
-            // Interactive Search Input Hook
-            $('#dashboardSearchInput').on('input', function () {
-                userTable.search(this.value).draw();
-            });
+                // Interactive Search Input Hook
+                $('#dashboardSearchInput').on('input', function () {
+                    userTable.search(this.value).draw();
+                });
 
-            // Interactive Segmented Filter Tabs
-            $('.tab-pill').on('click', function () {
-                $('.tab-pill').removeClass('active');
-                $(this).addClass('active');
+                // Interactive Segmented Filter Tabs
+                $('.tab-pill').on('click', function () {
+                    $('.tab-pill').removeClass('active');
+                    $(this).addClass('active');
 
-                let status = $(this).data('status');
-                // Column index 3 is Status
-                if (status) {
-                    userTable.column(3).search('^' + status + '$', true, false).draw();
-                } else {
-                    userTable.column(3).search('').draw();
-                }
-            });
+                    let status = $(this).data('status');
+                    // Column index 3 is Status
+                    if (status) {
+                        userTable.column(3).search('^' + status + '$', true, false).draw();
+                    } else {
+                        userTable.column(3).search('').draw();
+                    }
+                });
+            }
 
             // Interactive File Input feedback with delete/clear capability
             const fileInput = document.getElementById('fileInput');
