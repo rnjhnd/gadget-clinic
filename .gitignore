@@ -1,0 +1,24 @@
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+
+# Composer Dependencies
+/vendor/
+
+# Protected Application Uploads
+/storage/uploads/*
+!/storage/uploads/.gitignore
+/public/uploads/*
+!/public/uploads/.htaccess
+
+# Logs & Cache
+*.log
+/logs/*
+!/logs/.gitignore
+/cache/
+
+# OS Artifacts
+.DS_Store
+Thumbs.db
+

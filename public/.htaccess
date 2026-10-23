@@ -1,0 +1,40 @@
+# Disable directory indexing
+Options -Indexes
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Content-Security-Policy — restricts resource origins to mitigate XSS injection.
+    # 'unsafe-inline' is required for current inline scripts/styles in Twig templates.
+    # Harden further by migrating inline JS to external files and removing 'unsafe-inline'.
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
+
+    # HSTS — Forces HTTPS for all future visits. Follow these steps BEFORE enabling:
+    #   Step 1: Obtain a valid TLS certificate (e.g., Let's Encrypt via Certbot).
+    #   Step 2: Configure HTTP→HTTPS redirect in your Apache VirtualHost or server config.
+    #   Step 3: Verify HTTPS is fully working end-to-end (no mixed content warnings).
+    #   Step 4: Uncomment the line below. WARNING: premature enablement makes site inaccessible.
+    # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+</IfModule>
+
+# Block access to hidden files (.env, .git, etc.)
+<FilesMatch "^\.">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Front Controller URL Rewrite
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+

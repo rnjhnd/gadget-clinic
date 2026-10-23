@@ -1,0 +1,37 @@
+# ============================================================
+# Gadget Clinic — Server Cron Job Setup
+# ============================================================
+# Run these steps ONCE on your Linux production server after deployment.
+# ============================================================
+
+# STEP 1: Find your actual app path on the server
+#   realpath /path/to/gadget_clinic
+#   Example result: /var/www/gadget_clinic
+
+# STEP 2: Find your PHP binary
+#   which php
+#   Example result: /usr/bin/php
+
+# STEP 3: Create required server directories (if they don't exist)
+#   mkdir -p /var/www/gadget_clinic/logs        && chmod 755 /var/www/gadget_clinic/logs
+#   mkdir -p /var/www/gadget_clinic/cache/twig  && chmod 755 /var/www/gadget_clinic/cache/twig
+
+# STEP 4: Open the crontab editor
+#   crontab -e
+
+# STEP 5: Paste the following line at the bottom of the crontab,
+#         replacing the two placeholder paths with your actual values:
+#
+# ┌─ Replace "/usr/bin/php" with output of `which php`
+# │                          ┌─ Replace "/var/www/gadget_clinic" with output of `realpath`
+# │                          │
+0 0 * * * /usr/bin/php /var/www/gadget_clinic/scripts/auto_cancel_noshows.php >> /var/www/gadget_clinic/logs/cron.log 2>&1
+#
+# This runs the No-Show Auto-Cancel job every day at midnight (00:00).
+# Timezone is controlled by APP_TIMEZONE in your server's .env file (default: Asia/Manila).
+
+# STEP 6: Verify the crontab was saved correctly
+#   crontab -l
+
+# STEP 7: After the first midnight run, verify the log was written
+#   tail -f /var/www/gadget_clinic/logs/cron.log

@@ -1,0 +1,14 @@
+-- ============================================================
+-- NOTICE: This file has been relocated.
+-- ============================================================
+-- The database schema has been moved to the canonical location:
+--
+--   database/schema.sql
+--
+-- ACTION REQUIRED: Delete this file from your production server
+-- after deployment. It is kept here temporarily for backward
+-- compatibility only.
+--
+-- To initialize the database on the server, run:
+--   mysql -u gadget_app -p gadget_clinic < /path/to/gadget_clinic/database/schema.sql
+-- ============================================================

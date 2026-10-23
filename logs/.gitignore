@@ -1,0 +1,3 @@
+# Keep this directory in version control, but ignore all log files
+*.log
+!.gitignore

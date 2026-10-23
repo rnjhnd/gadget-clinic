@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gadget Clinic Command Deck — Admin</title>
+    <meta name="description" content="Centralized repair dispatch manager for Gadget Clinic.">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
+
+    <!-- Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- DataTables 2.0 Core Styles -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+    
+    <!-- Flatpickr Core Styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <link rel="stylesheet" href="assets/css/admin.css?v=4.8">
+</head>
+
+<body>
+
+    <!-- Executive Header -->
+    <header>
+        <div class="header-container">
+            <div class="brand-group">
+                <a href="admin" class="brand">
+                    <div class="brand-symbol">G</div>
+                    <span class="brand-title">Gadget Clinic</span>
+                </a>
+                <span class="deck-badge">Command Deck</span>
+            </div>
+
+            <div class="user-nav">
+                <button type="button" class="btn-client-view trigger-blackout-modal" style="margin-right: 8px;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><line x1="9" y1="15" x2="15" y2="15"></line>
+                    </svg>
+                    <span class="btn-text">Blackout Dates</span>
+                </button>
+
+                <a href="dashboard" class="btn-client-view">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    <span class="btn-text">Client Portal</span>
+                </a>
+
+                <div class="user-pill">
+                    <div class="user-avatar">{{ initials }}</div>
+                    <span>{{ user.name }}</span>
+                </div>
+
+                <a href="logout" class="btn-logout" title="Sign out of Gadget Clinic">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    <span class="btn-text">Sign Out</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Deck Content Workspace -->
+    <main class="deck-wrapper">
+
+        <!-- Action Notice -->
+        {% if success_message %}
+            <div class="alert-banner" id="adminSuccessBanner">
+                <div class="alert-content">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>{{ success_message }}</span>
+                </div>
+                <button type="button" class="alert-dismiss-btn" onclick="document.getElementById('adminSuccessBanner').remove()" aria-label="Dismiss notification">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+        {% endif %}
+
+        <!-- Deck KPI Overview -->
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">
+                    <span>Total Service Requests</span>
+                    <span class="indicator-dot dot-blue"></span>
+                </div>
+                <div class="kpi-val" id="kpi-total">{{ '%02d'|format(count_all) }}</div>
+                <div class="kpi-sub">All-time repair requests</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">
+                    <span>Awaiting Decision</span>
+                    <span class="indicator-dot dot-amber"></span>
+                </div>
+                <div class="kpi-val" id="kpi-pending">{{ '%02d'|format(count_pending) }}</div>
+                <div class="kpi-sub">Pending technician review</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">
+                    <span>Confirmed Slots</span>
+                    <span class="indicator-dot dot-green"></span>
+                </div>
+                <div class="kpi-val" id="kpi-confirmed">{{ '%02d'|format(count_confirmed) }}</div>
+                <div class="kpi-sub">Active & SMS notified</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">
+                    <span>Cancelled</span>
+                    <span class="indicator-dot dot-zinc"></span>
+                </div>
+                <div class="kpi-val" id="kpi-cancelled">{{ '%02d'|format(count_cancelled) }}</div>
+                <div class="kpi-sub">Released calendar slots</div>
+            </div>
+        </section>
+
+        <!-- Master Registry Tickets Card -->
+        <section class="ledger-card">
+            <div class="card-header">
+                <div class="section-index">Master Tickets / Dispatch</div>
+                <h1 class="card-title">Service Request Central</h1>
+                <p class="card-desc">Review customer credentials, verify supporting photos/warranty, and adjust repair statuses in real-time.</p>
+            </div>
+
+            <!-- Unified Controls Toolbar: Status Pills (Left) + Search (Right) -->
+            <div class="table-toolbar">
+                <div class="filter-segmented-bar" role="tablist">
+                    <button type="button" class="tab-pill active" data-status="">
+                        <span>All</span>
+                        <span class="pill-counter" id="tab-count-all">{{ count_all }}</span>
+                    </button>
+                    <button type="button" class="tab-pill" data-status="pending">
+                        <span>Pending</span>
+                        <span class="pill-counter" id="tab-count-pending">{{ count_pending }}</span>
+                    </button>
+                    <button type="button" class="tab-pill" data-status="confirmed">
+                        <span>Confirmed</span>
+                        <span class="pill-counter" id="tab-count-confirmed">{{ count_confirmed }}</span>
+                    </button>
+                    <button type="button" class="tab-pill" data-status="in_progress">
+                        <span>In Progress</span>
+                        <span class="pill-counter" id="tab-count-in_progress">{{ count_in_progress }}</span>
+                    </button>
+                    <button type="button" class="tab-pill" data-status="for_pickup">
+                        <span>For Pickup</span>
+                        <span class="pill-counter" id="tab-count-for_pickup">{{ count_for_pickup }}</span>
+                    </button>
+                    <button type="button" class="tab-pill" data-status="completed">
+                        <span>Completed</span>
+                        <span class="pill-counter" id="tab-count-completed">{{ count_completed }}</span>
+                    </button>
+                    <button type="button" class="tab-pill" data-status="cancelled">
+                        <span>Cancelled</span>
+                        <span class="pill-counter" id="tab-count-cancelled">{{ count_cancelled }}</span>
+                    </button>
+                </div>
+
+                <div class="table-search-box">
+                    <input type="search" id="adminSearchInput" placeholder="Search requests..." autocomplete="off">
+                </div>
+            </div>
+
+            <table id="sortableAdminTable" class="studio-admin-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left; width: 10%;">Ref ID</th>
+                            <th style="text-align: left; width: 23%;">Customer Info</th>
+                            <th style="text-align: left; width: 21%;">Drop-off Date & Time</th>
+                            <th style="text-align: left; width: 13%;">Repair Service</th>
+                            <th data-dt-order="disable" style="text-align: left; width: 10%;">Attachment</th>
+                            <th style="text-align: left; width: 10%;">Status</th>
+                            <th data-dt-order="disable" style="text-align: right; width: 13%;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for req in all_requests %}
+                            <tr>
+                                <td data-order="{{ req.id }}" data-search="#{{ '%04d'|format(req.id) }} {{ req.id }}" style="text-align: left;">
+                                    <span class="ref-pill" title="Request #{{ '%04d'|format(req.id) }}">
+                                        <span class="ref-hash">#</span>{{ '%04d'|format(req.id) }}
+                                    </span>
+                                </td>
+                                <td style="text-align: left;">
+                                    <div class="customer-name">{{ req.name }}</div>
+                                    <div class="customer-meta">
+                                        <span class="customer-email">{{ req.email }}</span>
+                                        {% if req.customer_phone is not empty %}
+                                            <a href="tel:{{ req.customer_phone }}" class="customer-phone-chip" title="Customer mobile contact">
+                                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                                </svg>
+                                                {{ req.customer_phone }}
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td data-order="{{ req.request_datetime }}" style="text-align: left;">
+                                    <div style="font-weight: 600; color: var(--text-primary);">
+                                        {{ req.request_datetime | date('M d, Y') }}
+                                    </div>
+                                    <div style="font-family: 'Space Mono', monospace; font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">
+                                        {{ req.request_datetime | date('h:i A') }}
+                                    </div>
+                                </td>
+                                <td style="text-align: left;">
+                                    <span class="service-badge">{{ req.service_type }}</span>
+                                </td>
+                                <td style="text-align: left;">
+                                    {% if req.document_path is not empty %}
+                                        <a href="actions/view_document?request_id={{ req.id }}" target="_blank" class="btn-view-doc" title="Inspect submitted document">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                <polyline points="14 2 14 8 20 8"></polyline>
+                                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                            </svg>
+                                            <span>Inspect</span>
+                                        </a>
+                                    {% else %}
+                                        <span class="empty-doc">—</span>
+                                    {% endif %}
+                                </td>
+                                <!-- Column 5: Auto-Saving Custom Status Dropdown -->
+                                <td data-order="{{ req.status }}" 
+                                    data-filter="{{ req.status }}" 
+                                    data-search="{{ req.status }}" 
+                                    style="text-align: left;">
+                                    <div class="status-auto-wrapper">
+                                        <div class="custom-status-dropdown" data-id="{{ req.id }}" data-current="{{ req.status }}">
+                                            <button type="button" class="status-trigger status-trigger-{{ req.status }}" aria-haspopup="listbox" aria-expanded="false" title="Change repair status">
+                                                <span class="status-trigger-content">
+                                                    <span class="status-dot dot-{{ req.status }}"></span>
+                                                    <span class="status-trigger-label">{{ req.status|replace({'_': ' '})|title }}</span>
+                                                </span>
+                                                <svg class="dropdown-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                                </svg>
+                                            </button>
+                                            <div class="status-menu" role="listbox">
+                                                <div class="status-option {% if req.status == 'pending' %}selected{% endif %}" data-value="pending" role="option">
+                                                    <span class="status-dot dot-pending"></span>
+                                                    <span class="option-label">Pending</span>
+                                                    <svg class="check-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                </div>
+                                                <div class="status-option {% if req.status == 'confirmed' %}selected{% endif %}" data-value="confirmed" role="option">
+                                                    <span class="status-dot dot-confirmed"></span>
+                                                    <span class="option-label">Confirmed</span>
+                                                    <svg class="check-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                </div>
+                                                <div class="status-option {% if req.status == 'in_progress' %}selected{% endif %}" data-value="in_progress" role="option">
+                                                    <span class="status-dot dot-in_progress"></span>
+                                                    <span class="option-label">In Progress</span>
+                                                    <svg class="check-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                </div>
+                                                <div class="status-option {% if req.status == 'for_pickup' %}selected{% endif %}" data-value="for_pickup" role="option">
+                                                    <span class="status-dot dot-for_pickup"></span>
+                                                    <span class="option-label">For Pickup</span>
+                                                    <svg class="check-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                </div>
+                                                <div class="status-option {% if req.status == 'completed' %}selected{% endif %}" data-value="completed" role="option">
+                                                    <span class="status-dot dot-completed"></span>
+                                                    <span class="option-label">Completed</span>
+                                                    <svg class="check-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                </div>
+                                                <div class="status-option {% if req.status == 'cancelled' %}selected{% endif %}" data-value="cancelled" role="option">
+                                                    <span class="status-dot dot-cancelled"></span>
+                                                    <span class="option-label">Cancelled</span>
+                                                    <svg class="check-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <!-- Column 6: Right-Aligned Actions Column -->
+                                <td style="text-align: right;">
+                                    <div class="action-row" style="justify-content: flex-end;">
+                                        {% if req.quote_status == 'pending' %}
+                                            <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 4px 10px; background: #fffbeb; color: #b45309; border-radius: var(--radius-pill); font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; white-space: nowrap; margin-right: 8px;">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                                Quote Pending
+                                            </span>
+                                        {% elseif req.quote_status == 'approved' and req.status == 'confirmed' %}
+                                            <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 4px 10px; background: #ecfdf5; color: #047857; border-radius: var(--radius-pill); font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; white-space: nowrap; margin-right: 8px;">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                                Quote Accepted
+                                            </span>
+                                        {% elseif req.quote_status == 'declined' %}
+                                            <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 4px 10px; background: #fef2f2; color: #b91c1c; border-radius: var(--radius-pill); font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; white-space: nowrap; margin-right: 8px;">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                                                Quote Rejected
+                                            </span>
+                                        {% endif %}
+
+                                        <div class="kebab-menu-container">
+                                            <button type="button" class="kebab-trigger" title="Actions">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <circle cx="12" cy="12" r="1.5"></circle>
+                                                    <circle cx="12" cy="5" r="1.5"></circle>
+                                                    <circle cx="12" cy="19" r="1.5"></circle>
+                                                </svg>
+                                            </button>
+                                            <div class="kebab-dropdown">
+                                                {% if req.status in ['pending', 'confirmed'] %}
+                                                    <button type="button" class="kebab-dropdown-item trigger-reschedule-modal" data-id="{{ req.id }}" data-datetime="{{ req.request_datetime }}">
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><polyline points="8 14 12 18 16 14"></polyline></svg>
+                                                        <span>Reschedule</span>
+                                                    </button>
+                                                {% endif %}
+                                                
+                                                {% if req.status in ['confirmed', 'in_progress', 'for_pickup', 'completed'] %}
+                                                    {% if req.quote_status is empty %}
+                                                        <button type="button" class="kebab-dropdown-item trigger-quote-modal dynamic-quote-btn" data-id="{{ req.id }}" data-datetime="{{ req.request_datetime }}">
+                                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                                            <span>Set Price</span>
+                                                        </button>
+                                                    {% else %}
+                                                        <button type="button" class="kebab-dropdown-item trigger-quote-modal dynamic-quote-btn" data-id="{{ req.id }}" data-datetime="{{ req.request_datetime }}" data-amount="{{ req.quote_amount }}" data-desc="{{ req.quote_description }}">
+                                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                                            <span>Edit Price</span>
+                                                        </button>
+                                                    {% endif %}
+                                                {% endif %}
+                                                <a href="actions/download_ticket?id={{ req.id }}&mode=view" class="kebab-dropdown-item">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                                    <span>View Stub</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+        </section>
+
+    </main>
+
+    <!-- Issue Quote Modal -->
+    <div id="quoteModal" class="monolith-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="quoteModalTitle">
+        <div class="monolith-modal-card">
+            <form id="issueQuoteForm" novalidate>
+                <input type="hidden" name="request_id" id="quoteReqId" value="">
+                
+                <div class="modal-header-row">
+                    <div class="modal-icon-badge" style="color: var(--text-primary); background: var(--bg-subtle); border-color: var(--border);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 id="quoteModalTitle" class="modal-title">Set Quotation Price</h3>
+                        <p class="modal-desc">Provide the repair cost and description. Customer will be notified.</p>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; color: var(--text-secondary);">Amount (PHP)</label>
+                    <input type="number" name="amount" id="quoteAmount" class="modal-input" required min="1" step="0.01">
+                </div>
+                
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; color: var(--text-secondary);">Description of Service/Parts</label>
+                    <textarea name="description" id="quoteDescription" class="modal-input" rows="3" required></textarea>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-modal-secondary dismiss-quote-modal">Cancel</button>
+                    <button type="submit" class="btn-modal-primary">Submit Quote</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reschedule Modal -->
+    <div id="rescheduleModal" class="monolith-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="rescheduleModalTitle">
+        <div class="monolith-modal-card">
+            <form id="rescheduleForm" novalidate>
+                <input type="hidden" name="request_id" id="rescheduleReqId" value="">
+                
+                <div class="modal-header-row">
+                    <div class="modal-icon-badge" style="color: var(--text-primary); background: var(--bg-subtle); border-color: var(--border);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><polyline points="8 14 12 18 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 id="rescheduleModalTitle" class="modal-title">Reschedule Appointment</h3>
+                        <p class="modal-desc">Move this appointment and provide a reason to the customer.</p>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; color: var(--text-secondary);">New Date</label>
+                    <div class="date-input-wrapper" style="position: relative;">
+                        <input type="text" name="date" id="rescheduleDate" class="modal-input date-picker-input" placeholder="Select Date" required style="padding-left: 36px;">
+                        <svg class="calendar-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none;">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 16px;">
+                    <div class="slot-header" style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
+                        <label style="font-weight: 600; font-size: 13px; color: var(--text-secondary);">Available Slots</label>
+                        <span class="slot-summary" id="rescheduleSlotStatus" style="font-size: 11.5px; color: var(--text-muted);">Choose a date above</span>
+                    </div>
+                    <input type="hidden" name="time" id="rescheduleTime" required>
+                    <div class="time-slots-grid" id="rescheduleTimeSlots" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; margin-bottom: 16px;">
+                        <div class="slot-placeholder" style="grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 0; color: var(--text-muted); text-align: center; background-color: var(--bg-subtle); border-radius: var(--radius-md); border: 1px dashed var(--border);">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 8px; opacity: 0.5;">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            <span style="font-size: 12px; font-weight: 500;">Select a date to view available times</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; color: var(--text-secondary);">Reason for Rescheduling</label>
+                    <textarea name="reason" id="rescheduleReason" class="modal-input" rows="3" required placeholder="e.g. Sorry, our main technician had an emergency today."></textarea>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-modal-secondary dismiss-reschedule-modal">Cancel</button>
+                    <button type="submit" class="btn-modal-primary">Confirm Reschedule</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Blackout Dates Modal -->
+    <div id="blackoutModal" class="monolith-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="blackoutModalTitle">
+        <div class="monolith-modal-card" style="max-width: 500px;">
+            <div class="modal-header-row">
+                <div class="modal-icon-badge" style="color: var(--text-primary); background: var(--bg-subtle); border-color: var(--border);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </div>
+                <div>
+                    <h3 id="blackoutModalTitle" class="modal-title">Manage Blackout Dates</h3>
+                    <p class="modal-desc">Block out days when the shop is closed. Customers cannot book on these days.</p>
+                </div>
+            </div>
+            
+            <div class="blackout-list-container" style="margin-bottom: 24px; max-height: 200px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 8px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 13px;" id="blackoutTable">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--border); color: var(--text-muted); text-align: left;">
+                            <th style="padding: 8px; font-weight: 600;">Date</th>
+                            <th style="padding: 8px; font-weight: 600;">Reason</th>
+                            <th style="padding: 8px; font-weight: 600; text-align: right;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <form id="addBlackoutForm" novalidate style="border-top: 1px solid var(--border); padding-top: 16px;">
+                <h4 style="font-size: 13px; font-weight: 600; margin-bottom: 12px;">Add New Blackout Date</h4>
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-bottom: 16px;">
+                    <div class="date-input-wrapper" style="position: relative;">
+                        <input type="text" name="date" id="newBlackoutDate" class="modal-input date-picker-input" placeholder="Select Date" required style="padding-left: 36px;">
+                        <svg class="calendar-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none;">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </div>
+                    <div>
+                        <input type="text" name="reason" id="newBlackoutReason" class="modal-input" required placeholder="Reason (e.g. Holiday)">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-modal-secondary dismiss-blackout-modal">Close</button>
+                    <button type="submit" class="btn-modal-primary">Add Date</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Blackout Modal -->
+    <div id="deleteBlackoutModal" class="monolith-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="deleteBlackoutModalTitle">
+        <div class="monolith-modal-card" style="max-width: 400px; text-align: center; padding: 32px 24px;">
+            <div style="display: flex; justify-content: center; margin-bottom: 16px;">
+                <div class="modal-icon-badge" style="color: #ef4444; background: #fef2f2; border-color: #fecaca; width: 48px; height: 48px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h18"></path>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                    </svg>
+                </div>
+            </div>
+            
+            <h3 id="deleteBlackoutModalTitle" class="modal-title" style="font-size: 18px; margin-bottom: 8px;">Remove Blackout Date</h3>
+            <p class="modal-desc" style="margin-bottom: 24px;">Are you sure you want to remove <strong id="deleteBlackoutDateText" style="color: var(--text-primary);">this date</strong>? Customers will be able to book appointments on this day again.</p>
+            
+            <form id="deleteBlackoutForm">
+                <input type="hidden" id="deleteBlackoutId" name="id">
+                <div class="modal-actions" style="justify-content: center;">
+                    <button type="button" class="btn-modal-secondary dismiss-delete-blackout" style="flex: 1;">Cancel</button>
+                    <button type="submit" class="btn-modal-primary" style="flex: 1; background: #ef4444; color: white; border-color: #ef4444;">Remove</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dependencies: jQuery 3.7.1, DataTables 2.0, Flatpickr -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script src="assets/js/admin.js?v=1.4"></script>
+</body>
+
+</html>

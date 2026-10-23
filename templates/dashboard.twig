@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Portal — Gadget Clinic</title>
+    <meta name="description" content="Manage and schedule device repairs seamlessly with Gadget Clinic.">
+
+    <!-- Modern Geometric & Monospace Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- DataTables 2.0 Core Styles -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+
+    <!-- Flatpickr Core Styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <link rel="stylesheet" href="assets/css/dashboard.css?v=6.14">
+</head>
+
+<body>
+
+    <!-- Minimalist Top Navigation -->
+    <header>
+        <div class="header-container">
+            <div class="brand-group">
+                <a href="dashboard" class="brand">
+                    <div class="brand-symbol">G</div>
+                    <span class="brand-title">Gadget Clinic</span>
+                </a>
+                <span class="header-tag">Repair Portal</span>
+            </div>
+
+            <div class="user-nav">
+                {% if user.role is defined and user.role == 'admin' %}
+                    <a href="admin" class="btn-admin">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="3" y1="9" x2="21" y2="9"></line>
+                            <line x1="9" y1="21" x2="9" y2="9"></line>
+                        </svg>
+                        <span class="btn-text">Admin Control</span>
+                    </a>
+                {% endif %}
+
+                <div class="user-pill">
+                    <div class="user-avatar">{{ initials }}</div>
+                    <span>{{ user.name }}</span>
+                </div>
+
+                <a href="logout" class="btn-logout" title="Sign out of Gadget Clinic">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    <span class="btn-text">Sign Out</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Workspace Container -->
+    <main class="workspace-wrapper">
+
+        <!-- Notification Alerts -->
+        {% if success_message %}
+            <div class="alert-banner alert-success" id="successBanner">
+                <div class="alert-content">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>{{ success_message }}</span>
+                </div>
+                <button type="button" class="alert-dismiss-btn" onclick="document.getElementById('successBanner').remove()" aria-label="Dismiss notification">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+        {% endif %}
+
+        {% if error_message %}
+            <div class="alert-banner alert-error" id="errorBanner">
+                <div class="alert-content">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span>{{ error_message }}</span>
+                </div>
+                <button type="button" class="alert-dismiss-btn" onclick="document.getElementById('errorBanner').remove()" aria-label="Dismiss notification">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+        {% endif %}
+
+        <!-- KPI Metric Chips -->
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">
+                    <span>Total Bookings</span>
+                    <span class="indicator-dot dot-zinc"></span>
+                </div>
+                <div class="kpi-val">{{ '%02d'|format(total_count) }}</div>
+                <div class="kpi-sub">Lifetime devices checked-in</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">
+                    <span>Confirmed</span>
+                    <span class="indicator-dot dot-green"></span>
+                </div>
+                <div class="kpi-val">{{ '%02d'|format(confirmed_count) }}</div>
+                <div class="kpi-sub">Verified & ready for check-in</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">
+                    <span>Awaiting Review</span>
+                    <span class="indicator-dot dot-amber"></span>
+                </div>
+                <div class="kpi-val">{{ '%02d'|format(pending_count) }}</div>
+                <div class="kpi-sub">Queued for technician review</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">
+                    <span>Service Center</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </div>
+                <div class="kpi-val kpi-val--time">
+                    <span>9:00 AM</span>
+                    <span class="kpi-time-sep">—</span>
+                    <span>5:00 PM</span>
+                </div>
+                <div class="kpi-sub">Mon - Fri • 30-min intervals</div>
+            </div>
+        </section>
+
+        <!-- Main Portal Layout -->
+        <div class="portal-grid">
+
+            <!-- Column 1: Service Drop-off Request -->
+            <section class="studio-card">
+                <div class="card-header">
+                    <div class="section-index">01 / Request</div>
+                    <h2 class="card-title">Book a Repair Service</h2>
+                    <p class="card-desc">Select a drop-off slot. Instant SMS alerts will be transmitted.</p>
+                </div>
+
+                <form method="POST" action="actions/book" enctype="multipart/form-data" class="booking-form" id="bookingForm" novalidate>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                    <div class="form-group">
+                        <label>Repair Service</label>
+                        <div class="custom-tier-dropdown" id="customTierDropdown">
+                            <input type="hidden" id="appt-service" name="service" value="Screen & LCD Repair" required>
+                            <button type="button" class="tier-trigger" aria-haspopup="listbox" aria-expanded="false" title="Choose repair service">
+                                <span class="tier-trigger-content">
+                                    <span class="tier-trigger-title">Screen & LCD Repair</span>
+                                </span>
+                                <svg class="dropdown-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                            <div class="tier-menu" role="listbox">
+                                <div class="tier-option selected" data-value="Screen & LCD Repair" role="option">
+                                    <div class="tier-option-text">
+                                        <span class="tier-name">Screen & LCD Repair</span>
+                                        <span class="tier-desc">Glass, digitizer, or display replacement</span>
+                                    </div>
+                                    <svg class="check-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </div>
+                                <div class="tier-option" data-value="Battery Replacement" role="option">
+                                    <div class="tier-option-text">
+                                        <span class="tier-name">Battery Replacement</span>
+                                        <span class="tier-desc">Battery health check and replacement</span>
+                                    </div>
+                                    <svg class="check-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </div>
+                                <div class="tier-option" data-value="Water Damage Recovery" role="option">
+                                    <div class="tier-option-text">
+                                        <span class="tier-name">Water Damage Recovery</span>
+                                        <span class="tier-desc">Deep cleaning & component revival</span>
+                                    </div>
+                                    <svg class="check-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </div>
+                                <div class="tier-option" data-value="Data Recovery & Backup" role="option">
+                                    <div class="tier-option-text">
+                                        <span class="tier-name">Data Recovery & Backup</span>
+                                        <span class="tier-desc">Safe extraction and file backup</span>
+                                    </div>
+                                    <svg class="check-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </div>
+                                <div class="tier-option" data-value="Hardware Diagnostics" role="option">
+                                    <div class="tier-option-text">
+                                        <span class="tier-name">Hardware Diagnostics</span>
+                                        <span class="tier-desc">Deep diagnostic check & component testing</span>
+                                    </div>
+                                    <svg class="check-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appt-date">Select Drop-off Date</label>
+                        <div class="date-input-wrapper">
+                            <input type="text" id="appt-date" name="date" class="studio-input date-picker-input" placeholder="Select a business date..." required readonly>
+                            <svg class="calendar-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                        </div>
+                        <span class="input-hint">Operating schedule: Monday through Friday</span>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="slot-header">
+                            <label>Available Consultation Slots</label>
+                            <span class="slot-summary" id="slotStatusText">Choose a date above</span>
+                        </div>
+                        <!-- Hidden form field holding the selected time slot e.g. 09:30 -->
+                        <input type="hidden" id="appt-time" name="time" required>
+                        <div class="time-slots-grid" id="timeSlotsContainer">
+                            <div class="slot-placeholder">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                <span>Select a drop-off date to inspect available time slots.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appt-phone">Mobile Number (SMS Updates)</label>
+                        <input type="tel" id="appt-phone" name="phone" class="studio-input" value="{{ user.phone | default('') }}" placeholder="09XX XXX XXXX" maxlength="13" required autocomplete="tel">
+                        <div class="field-error-msg" id="phoneErrorMsg" style="display: none;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <span>Please enter a valid 11-digit mobile number starting with 09 (e.g. 0917 123 4567)</span>
+                        </div>
+                        <span class="input-hint" id="phoneInputHint">11-digit Philippine mobile number for immediate SMS alerts</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Upload Photo of Damage or Warranty (Optional)</label>
+                        <div class="file-upload-box" id="fileUploadContainer">
+                            <input type="file" name="document" id="fileInput" accept=".jpg,.jpeg,.png,.pdf">
+                            <div class="file-box-text">Choose file or drag & drop</div>
+                            <div class="file-box-sub">PDF, PNG, JPG up to 5MB</div>
+                            <div class="file-selected-name" id="fileNameDisplay"></div>
+                        </div>
+                    </div>
+
+                    <button type="submit" name="submit_request" class="btn-monolith-primary">
+                        <span>Submit Request</span>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Column 2: Active Requests & Service Drop-off Stubs -->
+            <section class="studio-card">
+                <div class="card-header" style="margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
+                    <div class="section-index">02 / Tickets</div>
+                    <h2 class="card-title">Service Registry</h2>
+                    <p class="card-desc">Review your scheduled timeline, documents, and download digital drop-off stubs.</p>
+                </div>
+
+                <!-- Unified Controls Toolbar: Status Pills (Left) + Search (Right) -->
+                <div class="table-toolbar">
+                    <div class="filter-segmented-bar" role="tablist">
+                        <button type="button" class="tab-pill active" data-status="">
+                            <span>All</span>
+                            <span class="pill-counter" id="tab-count-all">{{ total_count }}</span>
+                        </button>
+                        <button type="button" class="tab-pill" data-status="pending">
+                            <span>Pending</span>
+                            <span class="pill-counter" id="tab-count-pending">{{ pending_count }}</span>
+                        </button>
+                        <button type="button" class="tab-pill" data-status="confirmed">
+                            <span>Confirmed</span>
+                            <span class="pill-counter" id="tab-count-confirmed">{{ confirmed_count }}</span>
+                        </button>
+                        <button type="button" class="tab-pill" data-status="cancelled">
+                            <span>Cancelled</span>
+                            <span class="pill-counter" id="tab-count-cancelled">{{ cancelled_count }}</span>
+                        </button>
+                    </div>
+
+                    <div class="table-search-box">
+                        <input type="search" id="dashboardSearchInput" placeholder="Search requests..." autocomplete="off">
+                    </div>
+                </div>
+
+                <table id="sortableTable" class="studio-table">
+                        <thead>
+                            <tr>
+                                <th style="text-align: left; width: 26%;">Schedule</th>
+                                <th style="text-align: left; width: 24%;">Repair Service</th>
+                                <th data-dt-order="disable" style="text-align: left; width: 16%;">Document</th>
+                                <th style="text-align: left; width: 16%;">Status</th>
+                                <th data-dt-order="disable" style="text-align: right; width: 18%;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for req in all_requests %}
+                                <tr>
+                                    <td data-order="{{ req.request_datetime }}" style="text-align: left;">
+                                        <div style="font-weight: 600; color: var(--text-primary);">
+                                            {{ req.request_datetime | date('M d, Y') }}
+                                        </div>
+                                        <div style="font-family: 'Space Mono', monospace; font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">
+                                            {{ req.request_datetime | date('h:i A') }}
+                                        </div>
+                                    </td>
+                                    <td style="text-align: left;">
+                                        <span style="font-weight: 500;">{{ req.service_type }}</span>
+                                    </td>
+                                    <td style="text-align: left;">
+                                        {% if req.document_path is not empty %}
+                                            <a href="actions/view_document?request_id={{ req.id }}" target="_blank" class="btn-view-doc" title="Inspect submitted document">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                                </svg>
+                                                <span>View File</span>
+                                            </a>
+                                        {% else %}
+                                            <span class="empty-doc">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td data-order="{{ req.status }}" 
+                                        data-filter="{{ req.status }}" 
+                                        data-search="{{ req.status }}" 
+                                        style="text-align: left;">
+                                        {% set status = req.status|lower %}
+                                        {% if status == 'confirmed' %}
+                                            <span class="status-badge status-confirmed"><span class="indicator-dot dot-green"></span> Confirmed</span>
+                                        {% elseif status == 'pending' %}
+                                            <span class="status-badge status-pending"><span class="indicator-dot dot-amber"></span> Pending</span>
+                                        {% elseif status == 'in_progress' %}
+                                            <span class="status-badge status-in_progress" style="background-color: #e0f2fe; color: #0369a1;"><span class="indicator-dot dot-blue" style="background-color: #0ea5e9;"></span> In Progress</span>
+                                        {% elseif status == 'for_pickup' %}
+                                            <span class="status-badge status-for_pickup" style="background-color: #f3e8ff; color: #7e22ce;"><span class="indicator-dot dot-purple" style="background-color: #a855f7;"></span> For Pickup</span>
+                                        {% elseif status == 'completed' %}
+                                            <span class="status-badge status-completed" style="background-color: #eff6ff; color: #1d4ed8;"><span class="indicator-dot dot-blue" style="background-color: #3b82f6;"></span> Completed</span>
+                                        {% else %}
+                                            <span class="status-badge status-cancelled"><span class="indicator-dot dot-cancelled"></span> Cancelled</span>
+                                        {% endif %}
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <div class="action-row" style="justify-content: flex-end;">
+                                        <div class="kebab-menu-container">
+                                            <button type="button" class="kebab-trigger" title="Actions">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <circle cx="12" cy="12" r="1.5"></circle>
+                                                    <circle cx="12" cy="5" r="1.5"></circle>
+                                                    <circle cx="12" cy="19" r="1.5"></circle>
+                                                </svg>
+                                            </button>
+                                            <div class="kebab-dropdown">
+                                                <a href="actions/download_ticket?id={{ req.id }}&mode=download" class="kebab-dropdown-item">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                                    <span>Download Pass</span>
+                                                </a>
+
+                                                {% if req.quote_status == 'pending' %}
+                                                    <button type="button" class="kebab-dropdown-item trigger-view-quote-modal" data-id="{{ req.id }}" data-amount="{{ req.quote_amount }}" data-desc="{{ req.quote_description | escape('html_attr') }}">
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                                                        <span>Review Quote</span>
+                                                    </button>
+                                                {% elseif req.quote_status == 'approved' and req.status == 'completed' %}
+                                                    <a href="actions/download_invoice?id={{ req.id }}" class="kebab-dropdown-item">
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                                                        <span>Download Invoice</span>
+                                                    </a>
+                                                {% endif %}
+
+                                                {% if req.status in ['pending', 'confirmed'] %}
+                                                    <button type="button" class="kebab-dropdown-item text-danger trigger-cancel-modal" data-id="{{ req.id }}" data-date="{{ req.request_datetime | date('M d, Y') }}">
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                                        <span>Cancel Request</span>
+                                                    </button>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Dependencies: jQuery 3.7.1, DataTables 2.0 & Flatpickr -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script src="assets/js/dashboard.js?v=1.8"></script>
+
+    <!-- Monolith Cancel Confirmation Modal -->
+    <div id="cancelConfirmModal" class="monolith-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="cancelModalTitle">
+        <div class="monolith-modal-card">
+            <form method="POST" action="actions/cancel" id="cancelRequestForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                <input type="hidden" name="cancel_request" value="1">
+                <input type="hidden" name="request_id" id="modalCancelReqId" value="">
+
+                <div class="modal-header-row">
+                    <div class="modal-icon-badge">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 id="cancelModalTitle" class="modal-title">Cancel Request</h3>
+                        <p id="cancelModalSubtext" class="modal-desc">Are you sure you want to cancel this request? This action cannot be undone.</p>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-modal-secondary dismiss-cancel-modal">Keep Request</button>
+                    <button type="submit" class="btn-modal-danger" id="confirmCancelBtn">Yes, Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Review Quote Modal -->
+    <div id="viewQuoteModal" class="monolith-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="viewQuoteModalTitle">
+        <div class="monolith-modal-card">
+            <form method="POST" action="actions/quote/respond">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <input type="hidden" name="request_id" id="viewQuoteReqId" value="">
+                
+                <div class="modal-header-row">
+                    <div class="modal-icon-badge" style="color: var(--text-primary); background: var(--bg-subtle); border-color: var(--border);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 id="viewQuoteModalTitle" class="modal-title">Quotation for Repair</h3>
+                        <p class="modal-desc">Please review the quotation provided by our technician.</p>
+                    </div>
+                </div>
+                
+                <div style="background: var(--bg-subtle); padding: 16px; border-radius: var(--radius-md); margin-bottom: 24px; border: 1px solid var(--border);">
+                    <div style="margin-bottom: 12px;">
+                        <span style="font-weight: 600; color: var(--text-secondary); display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">Estimated Amount</span>
+                        <span id="viewQuoteAmount" style="font-size: 24px; font-weight: 700; color: var(--text-primary);"></span>
+                    </div>
+                    <div>
+                        <span style="font-weight: 600; color: var(--text-secondary); display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">Description of Service/Parts</span>
+                        <span id="viewQuoteDescription" style="display: block; margin-top: 4px; color: var(--text-primary); line-height: 1.5; white-space: pre-wrap; font-size: 14px;"></span>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-modal-secondary dismiss-view-quote-modal">Close</button>
+                    <button type="submit" name="action" value="declined" class="btn-modal-danger">Reject</button>
+                    <button type="submit" name="action" value="approved" class="btn-modal-primary">Accept Quote</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

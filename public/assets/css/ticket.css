@@ -1,0 +1,196 @@
+@page {
+            margin: 28mm 24mm 24mm 24mm;
+            size: a4 portrait;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #09090b;
+            background: #ffffff;
+            font-size: 13px;
+            line-height: 1.45;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Top Monolith Header */
+        .pass-header {
+            border-bottom: 2px solid #09090b;
+            padding-bottom: 20px;
+            margin-bottom: 26px;
+        }
+
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .brand-title {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: #09090b;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .brand-sub {
+            font-size: 9.5px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #71717a;
+            margin-top: 6px;
+        }
+
+        .badge-voucher {
+            display: inline-block;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            background-color: #f4f4f5;
+            border: 1px solid #e4e4e7;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #09090b;
+        }
+
+        /* Hero Session Block */
+        .hero-box {
+            background-color: #fafafa;
+            border: 1px solid #e4e4e7;
+            border-radius: 8px;
+            padding: 22px 24px;
+            margin-bottom: 26px;
+        }
+
+        .hero-label {
+            font-size: 9px;
+            font-family: 'Courier New', Courier, monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #71717a;
+            margin-bottom: 6px;
+        }
+
+        .hero-time {
+            font-size: 26px;
+            font-weight: bold;
+            color: #09090b;
+            letter-spacing: -0.03em;
+            margin: 0 0 4px 0;
+        }
+
+        .hero-date {
+            font-size: 14px;
+            color: #52525b;
+            font-weight: 500;
+        }
+
+        /* Detail Grid Table */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 26px;
+        }
+
+        .info-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e4e4e7;
+            vertical-align: middle;
+        }
+
+        .cell-label {
+            font-size: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #71717a;
+            width: 32%;
+        }
+
+        .cell-value {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #09090b;
+        }
+
+        .cell-sub {
+            font-size: 11px;
+            color: #71717a;
+            font-weight: normal;
+            margin-top: 2px;
+        }
+
+        /* Status Tag */
+        .status-pill {
+            display: inline-block;
+            font-size: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            letter-spacing: 0.08em;
+            font-weight: bold;
+            padding: 3px 8px;
+            border: 1px solid #09090b;
+            background: #ffffff;
+            color: #09090b;
+        }
+
+        /* Simulated Monolith Barcode / Checkpoint */
+        .stub-box {
+            border: 1px dashed #d4d4d8;
+            border-radius: 6px;
+            padding: 16px 20px;
+            margin-top: 32px;
+            background-color: #ffffff;
+        }
+
+        .stub-title {
+            font-size: 9.5px;
+            font-family: 'Courier New', Courier, monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #71717a;
+            margin-bottom: 6px;
+        }
+
+        .barcode-container {
+            margin: 8px 0 10px 0;
+            padding: 4px 0;
+            display: inline-block;
+        }
+
+        .barcode-container > div {
+            margin: 0 auto;
+        }
+
+        .barcode-bars {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 26px;
+            letter-spacing: -1px;
+            color: #09090b;
+            line-height: 0.8;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            font-weight: 900;
+        }
+
+        .stub-code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+            color: #09090b;
+        }
+
+        /* Footer */
+        .pass-footer {
+            margin-top: 36px;
+            border-top: 1px solid #e4e4e7;
+            padding-top: 14px;
+            font-size: 9.5px;
+            color: #a1a1aa;
+            text-align: justify;
+            line-height: 1.5;
+        }
