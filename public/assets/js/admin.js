@@ -427,6 +427,45 @@ $(document).ready(function () {
             });
 
             // ---------------------------------------------------------
+            // Modal Dirty-State Protection Helpers
+            // ---------------------------------------------------------
+            function pulseModalCard(modalSelector) {
+                const card = $(modalSelector).find('.monolith-modal-card');
+                if (!card.length) return;
+                card.removeClass('modal-static-pulse');
+                void card[0].offsetWidth; // Trigger DOM reflow to restart CSS animation
+                card.addClass('modal-static-pulse');
+                setTimeout(function() {
+                    card.removeClass('modal-static-pulse');
+                }, 250);
+            }
+
+            function isQuoteFormDirty() {
+                const initialAmount = String($('#quoteModal').data('initial-amount') || '');
+                const initialDesc = String($('#quoteModal').data('initial-desc') || '').trim();
+                const currentAmount = String($('#quoteAmount').val() || '');
+                const currentDesc = String($('#quoteDescription').val() || '').trim();
+
+                return currentAmount !== initialAmount || currentDesc !== initialDesc;
+            }
+
+            function isRescheduleFormDirty() {
+                const initialDate = $('#rescheduleModal').data('initial-date') || '';
+                const initialTime = $('#rescheduleModal').data('initial-time') || '';
+                const currentDate = $('#rescheduleDate').val() || '';
+                const currentTime = $('#rescheduleTime').val() || '';
+                const reasonVal = $('#rescheduleReason').val().trim();
+
+                return !!(reasonVal || (currentDate && currentDate !== initialDate) || (currentTime && currentTime !== initialTime));
+            }
+
+            function isBlackoutFormDirty() {
+                const dateVal = $('#newBlackoutDate').val();
+                const reasonVal = $('#newBlackoutReason').val().trim();
+                return !!(dateVal || reasonVal);
+            }
+
+            // ---------------------------------------------------------
             // Quotation Modal Logic
             // ---------------------------------------------------------
             $(document).on('click', '.trigger-quote-modal', function(e) {
@@ -440,18 +479,30 @@ $(document).ready(function () {
                 $('#quoteReqId').val(reqId);
                 $('#quoteAmount').val(existingAmount || '');
                 $('#quoteDescription').val(existingDesc || '');
+
+                // Store baseline values for dirty-state detection
+                $('#quoteModal').data('initial-amount', existingAmount ? String(existingAmount) : '');
+                $('#quoteModal').data('initial-desc', existingDesc ? String(existingDesc).trim() : '');
                 
                 $('#quoteModalTitle').text(existingAmount ? 'Edit Quotation Price' : 'Set Quotation Price');
                 $('#quoteModal').addClass('is-active');
             });
 
             $('.dismiss-quote-modal').on('click', function() {
+                // Explicit Cancel button discards draft and resets
+                $('#quoteAmount').val('');
+                $('#quoteDescription').val('');
+                $('#quoteModal').removeData('initial-amount').removeData('initial-desc');
                 $('#quoteModal').removeClass('is-active');
             });
 
-            // Dismiss quote modal on backdrop click
+            // Dismiss quote modal on backdrop click with dirty-state guard
             $('#quoteModal').on('click', function(e) {
                 if ($(e.target).is('#quoteModal')) {
+                    if (isQuoteFormDirty()) {
+                        pulseModalCard('#quoteModal');
+                        return;
+                    }
                     $('#quoteModal').removeClass('is-active');
                 }
             });
@@ -519,9 +570,11 @@ $(document).ready(function () {
                 
                 $('#rescheduleReqId').val(reqId);
                 
+                let datePart = '';
+                let timePart = '';
                 if (dt) {
-                    const datePart = dt.split(' ')[0];
-                    const timePart = dt.split(' ')[1].substring(0, 5);
+                    datePart = dt.split(' ')[0];
+                    timePart = dt.split(' ')[1].substring(0, 5);
                     if (document.querySelector('#rescheduleDate')._flatpickr) {
                         document.querySelector('#rescheduleDate')._flatpickr.setDate(datePart);
                     } else {
@@ -531,18 +584,29 @@ $(document).ready(function () {
                     // Fetch slots for this date
                     fetchAndRenderAdminSlots(datePart);
                 }
+
+                // Store baseline values for dirty-state detection
+                $('#rescheduleModal').data('initial-date', datePart);
+                $('#rescheduleModal').data('initial-time', timePart);
                 
                 $('#rescheduleReason').val('');
                 $('#rescheduleModal').addClass('is-active');
             });
 
             $('.dismiss-reschedule-modal').on('click', function() {
+                // Explicit Cancel button discards draft and resets
+                $('#rescheduleReason').val('');
+                $('#rescheduleModal').removeData('initial-date').removeData('initial-time');
                 $('#rescheduleModal').removeClass('is-active');
             });
 
-            // Dismiss reschedule modal on backdrop click
+            // Dismiss reschedule modal on backdrop click with dirty-state guard
             $('#rescheduleModal').on('click', function(e) {
                 if ($(e.target).is('#rescheduleModal')) {
+                    if (isRescheduleFormDirty()) {
+                        pulseModalCard('#rescheduleModal');
+                        return;
+                    }
                     $('#rescheduleModal').removeClass('is-active');
                 }
             });
@@ -703,12 +767,23 @@ $(document).ready(function () {
             });
 
             $('.dismiss-blackout-modal').on('click', function() {
+                // Explicit Close button discards any unadded draft
+                if (document.querySelector('#newBlackoutDate')._flatpickr) {
+                    document.querySelector('#newBlackoutDate')._flatpickr.clear();
+                } else {
+                    $('#newBlackoutDate').val('');
+                }
+                $('#newBlackoutReason').val('');
                 $('#blackoutModal').removeClass('is-active');
             });
 
-            // Dismiss blackout modal on backdrop click
+            // Dismiss blackout modal on backdrop click with dirty-state guard
             $('#blackoutModal').on('click', function(e) {
                 if ($(e.target).is('#blackoutModal')) {
+                    if (isBlackoutFormDirty()) {
+                        pulseModalCard('#blackoutModal');
+                        return;
+                    }
                     $('#blackoutModal').removeClass('is-active');
                 }
             });
@@ -1229,7 +1304,7 @@ $(document).ready(function () {
                 }
             });
 
-            // Global Escape key handler for all modal dialogs
+            // Global Escape key handler for all modal dialogs with dirty-state guards
             $(document).on('keydown', function (e) {
                 if (e.key === 'Escape') {
                     // Let Flatpickr handle closing its own calendar dropdown first if open
@@ -1249,16 +1324,28 @@ $(document).ready(function () {
                     }
 
                     if ($('#blackoutModal').hasClass('is-active')) {
+                        if (isBlackoutFormDirty()) {
+                            pulseModalCard('#blackoutModal');
+                            return;
+                        }
                         $('#blackoutModal').removeClass('is-active');
                         return;
                     }
 
                     if ($('#rescheduleModal').hasClass('is-active')) {
+                        if (isRescheduleFormDirty()) {
+                            pulseModalCard('#rescheduleModal');
+                            return;
+                        }
                         $('#rescheduleModal').removeClass('is-active');
                         return;
                     }
 
                     if ($('#quoteModal').hasClass('is-active')) {
+                        if (isQuoteFormDirty()) {
+                            pulseModalCard('#quoteModal');
+                            return;
+                        }
                         $('#quoteModal').removeClass('is-active');
                         return;
                     }
