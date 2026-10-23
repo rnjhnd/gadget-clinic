@@ -12,9 +12,9 @@ Options -Indexes
     </IfModule>
 </FilesMatch>
 
-# Forward requests to public/ front controller directory
+# Forward requests to public/ front controller directory without rewrite loops
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule ^$ public/ [L]
-    RewriteRule ^((?!public/).*)$ public/$1 [L]
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
