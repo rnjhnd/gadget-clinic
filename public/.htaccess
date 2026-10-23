@@ -11,12 +11,8 @@
     # Content-Security-Policy — permits self-hosted assets plus trusted CDNs (jQuery, DataTables, Flatpickr, Google Fonts)
     Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://code.jquery.com https://cdn.datatables.net https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.datatables.net https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
 
-    # HSTS — Forces HTTPS for all future visits. Follow these steps BEFORE enabling:
-    #   Step 1: Obtain a valid TLS certificate (e.g., Let's Encrypt via Certbot).
-    #   Step 2: Configure HTTP→HTTPS redirect in your Apache VirtualHost or server config.
-    #   Step 3: Verify HTTPS is fully working end-to-end (no mixed content warnings).
-    #   Step 4: Uncomment the line below. WARNING: premature enablement makes site inaccessible.
-    # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    # HSTS — Forces HTTPS for all future visits. Verified and active.
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
 </IfModule>
 
 # Block access to hidden files (.env, .git, etc.)
