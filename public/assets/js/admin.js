@@ -4,6 +4,40 @@ $(document).ready(function () {
                 $('.alert-banner').fadeOut(500, function() { $(this).remove(); });
             }, 5000);
 
+            // Cohesive Empty States matching User Dashboard Service Registry
+            const tableEmptyFilterHtml = `
+                <div class="empty-registry-state in-table">
+                    <div class="empty-registry-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
+                            <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="empty-registry-title">No matching reservations</h3>
+                    <p class="empty-registry-desc">No requests match the selected status filter or search query.</p>
+                    <button type="button" class="table-empty-reset-btn">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                            <path d="M3 3v5h5"></path>
+                        </svg>
+                        <span>Reset filters</span>
+                    </button>
+                </div>
+            `;
+
+            const tableEmptyTotalHtml = `
+                <div class="empty-registry-state in-table">
+                    <div class="empty-registry-icon">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                        </svg>
+                    </div>
+                    <h3 class="empty-registry-title">No repair bookings yet</h3>
+                    <p class="empty-registry-desc">There are currently no repair booking requests in the dispatch registry.</p>
+                </div>
+            `;
+
             // Initialize Master Ledger DataTable with 2-state toggle sorting
             let table = new DataTable('#sortableAdminTable', {
                 order: [[2, 'desc']], // Most upcoming/recent schedule first
@@ -16,7 +50,8 @@ $(document).ready(function () {
                 language: {
                     search: "",
                     searchPlaceholder: "Search reservations...",
-                    zeroRecords: "No matching reservations located."
+                    zeroRecords: tableEmptyFilterHtml,
+                    emptyTable: tableEmptyTotalHtml
                 },
                 columnDefs: [
                     { targets: '_all', orderSequence: ['asc', 'desc'] },
@@ -89,6 +124,14 @@ $(document).ready(function () {
                 // Simply redraw the table. The custom search plugin will handle the filtering based on the real-time DOM state.
                 // We clear any built-in column search first to prevent conflicts.
                 table.column(5).search('').draw();
+            });
+
+            // Delegated click handler to reset table filters and search
+            $(document).on('click', '.table-empty-reset-btn', function (e) {
+                e.preventDefault();
+                $('#adminSearchInput').val('');
+                table.search('');
+                $('.filter-segmented-bar .tab-pill[data-status=""]').trigger('click');
             });
 
             // ---------------------------------------------------------

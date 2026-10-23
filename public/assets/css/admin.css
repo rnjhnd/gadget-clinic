@@ -759,11 +759,109 @@
         table.studio-admin-table tbody td.dt-empty,
         table.studio-admin-table tbody td.dataTables_empty {
             text-align: center !important;
-            padding: 52px 20px !important;
+            padding: 36px 20px !important;
             color: var(--text-muted) !important;
             font-size: 13px !important;
             font-family: inherit !important;
             background-color: var(--bg-surface) !important;
+        }
+
+        /* Dedicated Empty State Styling (Cohesive with User Dashboard) */
+        .empty-registry-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 56px 24px;
+            text-align: center;
+            background: var(--bg-canvas);
+            border: 1px dashed var(--border-hover);
+            border-radius: var(--radius-md);
+            margin: 8px 0 16px;
+        }
+
+        .empty-registry-state.in-table {
+            background: transparent;
+            border: none;
+            padding: 8px 16px;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .empty-registry-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: var(--radius-pill);
+            background: var(--bg-subtle);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+            border: 1px solid var(--border);
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+        }
+
+        .empty-registry-state.in-table:hover .empty-registry-icon {
+            transform: translateY(-2px);
+            background-color: var(--bg-surface);
+            border-color: var(--border-hover);
+        }
+
+        .empty-registry-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary) !important;
+            margin-bottom: 6px;
+            letter-spacing: -0.01em;
+        }
+
+        .empty-registry-desc {
+            font-size: 13px;
+            color: var(--text-secondary) !important;
+            max-width: 360px;
+            line-height: 1.5;
+            margin: 0 auto;
+        }
+
+        .table-empty-reset-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-primary);
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            padding: 7px 16px;
+            margin-top: 16px;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .table-empty-reset-btn:hover {
+            background: var(--bg-subtle);
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.06);
+        }
+
+        .table-empty-reset-btn:active {
+            transform: translateY(0);
+        }
+
+        .table-empty-reset-btn svg {
+            color: var(--text-muted);
+            transition: transform 0.3s ease, color 0.2s ease;
+        }
+
+        .table-empty-reset-btn:hover svg {
+            transform: rotate(-60deg);
+            color: var(--text-primary);
         }
 
         table.studio-admin-table thead th {
