@@ -365,7 +365,7 @@
                                     </td>
                                     <td style="text-align: left;">
                                         {% if req.document_path is not empty %}
-                                            <a href="actions/view_document?request_id={{ req.id }}" target="_blank" class="btn-view-doc" title="Inspect submitted document">
+                                            <a href="actions/view_document?request_id={{ req.id }}" target="_blank" class="btn-view-doc" title="Inspect submitted document" data-doc-name="{{ req.document_path }}">
                                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                                     <polyline points="14 2 14 8 20 8"></polyline>
@@ -517,6 +517,72 @@
                     <button type="submit" name="action" value="approved" class="btn-modal-primary">Accept Quote</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Document Preview Lightbox Modal -->
+    <div id="documentPreviewModal" class="monolith-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="docPreviewModalTitle">
+        <div class="monolith-modal-card doc-preview-card">
+            <div class="doc-preview-header">
+                <div class="doc-preview-title-wrap">
+                    <div class="modal-icon-badge" style="width: 32px; height: 32px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 id="docPreviewModalTitle" class="doc-preview-title">Document Preview</h3>
+                        <span id="docPreviewFilename" class="doc-preview-subtitle"></span>
+                    </div>
+                </div>
+                <div class="doc-preview-actions">
+                    <a id="docPreviewExternalLink" href="#" target="_blank" class="btn-preview-tool" title="Open original in separate tab" aria-label="Open in new tab">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        <span>Open Tab</span>
+                    </a>
+                    <button type="button" class="btn-preview-close dismiss-doc-modal" title="Close preview (Esc)" aria-label="Close">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="doc-preview-stage">
+                <!-- Loading State with Spinner -->
+                <div id="docPreviewSpinner" class="doc-preview-loader">
+                    <div class="doc-spinner-ring"></div>
+                    <span>Loading document preview...</span>
+                </div>
+
+                <!-- Image Viewer -->
+                <img id="docPreviewImg" class="doc-preview-img" src="" alt="Attachment Preview" style="display: none;">
+
+                <!-- PDF Viewer (iframe) -->
+                <iframe id="docPreviewFrame" class="doc-preview-frame" src="" style="display: none;"></iframe>
+
+                <!-- Error Fallback -->
+                <div id="docPreviewError" class="doc-preview-error" style="display: none;">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <h4>Preview Unavailable</h4>
+                    <p>Unable to render inline preview. You can open or download the file directly.</p>
+                    <a id="docPreviewErrorBtn" href="#" target="_blank" class="btn-modal-primary" style="display: inline-flex; text-decoration: none; margin-top: 8px;">
+                        Open Document
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </body>

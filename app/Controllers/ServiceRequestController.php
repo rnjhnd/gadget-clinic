@@ -113,6 +113,10 @@ class ServiceRequestController extends BaseController {
                     $destination = $upload_dir . $new_filename;
 
                     if (move_uploaded_file($file_tmp, $destination)) {
+                        // Optimize images (downscale & progressive JPEG) if GD extension is available
+                        if ($file_ext !== 'pdf') {
+                            $this->optimizeImage($destination, $detected_mime);
+                        }
                         // Store only the filename, not the full absolute path, for portability.
                         $document_path = $new_filename;
                     } else {
@@ -599,10 +603,102 @@ HTML;
 
         header('Content-Type: ' . $mime);
         header('Content-Length: ' . filesize($file_path));
+        // Private browser cache for 24 hours so repeat views load instantaneously
+        header('Cache-Control: private, max-age=86400');
         // Inline display in browser; change to 'attachment' to force download
         header('Content-Disposition: inline; filename="' . $filename . '"');
         header('X-Content-Type-Options: nosniff');
         readfile($file_path);
         exit();
+    }
+
+    /**
+     * Downscales and compresses uploaded images using PHP GD.
+     * Preserves aspect ratio up to max 1600px, enables progressive JPEG encoding,
+     * corrects EXIF camera orientation, and reduces network payload by up to 90%.
+     */
+    private function optimizeImage(string $filePath, string $mime): void
+    {
+        if (!extension_loaded('gd') || !file_exists($filePath)) {
+            return;
+        }
+
+        try {
+            $src = null;
+            if ($mime === 'image/jpeg') {
+                $src = @imagecreatefromjpeg($filePath);
+            } elseif ($mime === 'image/png') {
+                $src = @imagecreatefrompng($filePath);
+            }
+
+            if (!$src) {
+                return;
+            }
+
+            // Correct EXIF orientation for smartphone camera photos
+            if ($mime === 'image/jpeg' && function_exists('exif_read_data')) {
+                $exif = @exif_read_data($filePath);
+                if (!empty($exif['Orientation'])) {
+                    switch ((int) $exif['Orientation']) {
+                        case 3:
+                            $rotated = imagerotate($src, 180, 0);
+                            if ($rotated !== false) {
+                                imagedestroy($src);
+                                $src = $rotated;
+                            }
+                            break;
+                        case 6:
+                            $rotated = imagerotate($src, -90, 0);
+                            if ($rotated !== false) {
+                                imagedestroy($src);
+                                $src = $rotated;
+                            }
+                            break;
+                        case 8:
+                            $rotated = imagerotate($src, 90, 0);
+                            if ($rotated !== false) {
+                                imagedestroy($src);
+                                $src = $rotated;
+                            }
+                            break;
+                    }
+                }
+            }
+
+            $orig_w = imagesx($src);
+            $orig_h = imagesy($src);
+
+            $max_dim = 1600;
+            if ($orig_w > $max_dim || $orig_h > $max_dim) {
+                $ratio = min($max_dim / $orig_w, $max_dim / $orig_h);
+                $new_w = max(1, (int) round($orig_w * $ratio));
+                $new_h = max(1, (int) round($orig_h * $ratio));
+
+                $target = imagecreatetruecolor($new_w, $new_h);
+
+                if ($mime === 'image/png') {
+                    imagealphablending($target, false);
+                    imagesavealpha($target, true);
+                    $transparent = imagecolorallocatealpha($target, 255, 255, 255, 127);
+                    imagefilledrectangle($target, 0, 0, $new_w, $new_h, $transparent);
+                }
+
+                imagecopyresampled($target, $src, 0, 0, 0, 0, $new_w, $new_h, $orig_w, $orig_h);
+                imagedestroy($src);
+                $src = $target;
+            }
+
+            if ($mime === 'image/jpeg') {
+                // Enable progressive JPEG to prevent top-to-bottom raster scan chunking
+                imageinterlace($src, true);
+                imagejpeg($src, $filePath, 82);
+            } elseif ($mime === 'image/png') {
+                imagepng($src, $filePath, 7);
+            }
+
+            imagedestroy($src);
+        } catch (\Throwable $e) {
+            error_log('[Gadget Clinic] Image optimization error: ' . $e->getMessage());
+        }
     }
 }

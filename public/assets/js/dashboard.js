@@ -828,4 +828,97 @@ $(document).ready(function () {
                     $('.kebab-menu-container').removeClass('is-open dropup');
                 }
             }, true);
+
+            // -------------------------------------------------------------
+            // Document Preview Lightbox Modal
+            // -------------------------------------------------------------
+            function closeDocPreviewModal() {
+                const modal = $('#documentPreviewModal');
+                modal.removeClass('is-active');
+                $('#docPreviewImg').removeClass('is-loaded').hide().attr('src', '');
+                $('#docPreviewFrame').hide().attr('src', '');
+                $('#docPreviewError').hide();
+                $('#docPreviewSpinner').hide();
+            }
+
+            $(document).on('click', '.btn-view-doc', function (e) {
+                // If user held Ctrl / Cmd or middle-clicked, allow native browser tab opening
+                if (e.ctrlKey || e.metaKey || e.which === 2) {
+                    return;
+                }
+
+                e.preventDefault();
+                const docUrl = $(this).attr('href');
+                const docName = $(this).data('doc-name') || '';
+
+                if (!docUrl) return;
+
+                const modal = $('#documentPreviewModal');
+                const spinner = $('#docPreviewSpinner');
+                const img = $('#docPreviewImg');
+                const frame = $('#docPreviewFrame');
+                const errorBox = $('#docPreviewError');
+                const extLink = $('#docPreviewExternalLink');
+                const filenameLabel = $('#docPreviewFilename');
+
+                // Reset modal state
+                img.removeClass('is-loaded').hide().attr('src', '');
+                frame.hide().attr('src', '');
+                errorBox.hide();
+                spinner.show();
+
+                // Set headers & links
+                extLink.attr('href', docUrl);
+                filenameLabel.text(docName ? docName.split('/').pop() : 'Attached File');
+
+                modal.addClass('is-active');
+
+                const isPdf = docName.toLowerCase().endsWith('.pdf') || docUrl.toLowerCase().includes('.pdf');
+
+                if (isPdf) {
+                    frame.attr('src', docUrl);
+                    frame.off('load').on('load', function () {
+                        spinner.hide();
+                        frame.show();
+                    });
+                    frame.off('error').on('error', function () {
+                        spinner.hide();
+                        errorBox.show();
+                        $('#docPreviewErrorBtn').attr('href', docUrl);
+                    });
+                } else {
+                    const preloadImg = new Image();
+                    preloadImg.onload = function () {
+                        spinner.hide();
+                        img.attr('src', docUrl).show();
+                        // Trigger CSS fade-in
+                        setTimeout(function () {
+                            img.addClass('is-loaded');
+                        }, 20);
+                    };
+                    preloadImg.onerror = function () {
+                        spinner.hide();
+                        errorBox.show();
+                        $('#docPreviewErrorBtn').attr('href', docUrl);
+                    };
+                    preloadImg.src = docUrl;
+                }
+            });
+
+            $(document).on('click', '.dismiss-doc-modal', function (e) {
+                e.preventDefault();
+                closeDocPreviewModal();
+            });
+
+            $('#documentPreviewModal').on('click', function (e) {
+                if ($(e.target).is('#documentPreviewModal')) {
+                    closeDocPreviewModal();
+                }
+            });
+
+            $(document).on('keydown', function (e) {
+                if (e.key === 'Escape' && $('#documentPreviewModal').hasClass('is-active')) {
+                    closeDocPreviewModal();
+                }
+            });
         });
