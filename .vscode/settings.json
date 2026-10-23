@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "*.htaccess": "properties",
+    ".htaccess": "properties"
+  }
+}
