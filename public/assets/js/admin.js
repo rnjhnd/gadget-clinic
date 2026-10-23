@@ -750,12 +750,14 @@ $(document).ready(function () {
                             if (res.data.length === 0) {
                                 rows = '<tr><td colspan="3" style="padding: 12px 8px; text-align: center; color: var(--text-muted);">No upcoming blackout dates.</td></tr>';
                             } else {
-                                res.data.forEach(function(item) {
+                                res.data.forEach(function(item, index) {
                                     // Parse date string securely
                                     const d = new Date(item.blackout_date + 'T00:00:00');
                                     const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                                    const isLast = index === res.data.length - 1;
+                                    const borderStyle = isLast ? '' : 'style="border-bottom: 1px solid var(--border);"';
                                     rows += `
-                                        <tr style="border-bottom: 1px solid var(--border);">
+                                        <tr ${borderStyle}>
                                             <td style="padding: 8px;">${dateStr}</td>
                                             <td style="padding: 8px;">${escapeHtml(item.reason)}</td>
                                             <td style="padding: 8px; text-align: right;">

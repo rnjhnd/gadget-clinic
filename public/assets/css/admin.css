@@ -1542,6 +1542,10 @@ body {
     border-top: 1px solid var(--border);
 }
 
+#blackoutTable tbody tr:last-child {
+    border-bottom: none !important;
+}
+
 .btn-modal-secondary {
     background: transparent;
     border: 1px solid var(--border);
