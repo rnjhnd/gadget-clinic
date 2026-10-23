@@ -8,10 +8,8 @@
     Header set X-XSS-Protection "1; mode=block"
     Header set Referrer-Policy "strict-origin-when-cross-origin"
 
-    # Content-Security-Policy — restricts resource origins to mitigate XSS injection.
-    # 'unsafe-inline' is required for current inline scripts/styles in Twig templates.
-    # Harden further by migrating inline JS to external files and removing 'unsafe-inline'.
-    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
+    # Content-Security-Policy — permits self-hosted assets plus trusted CDNs (jQuery, DataTables, Flatpickr, Google Fonts)
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://code.jquery.com https://cdn.datatables.net https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.datatables.net https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
 
     # HSTS — Forces HTTPS for all future visits. Follow these steps BEFORE enabling:
     #   Step 1: Obtain a valid TLS certificate (e.g., Let's Encrypt via Certbot).
