@@ -1,5 +1,5 @@
-# Disable directory browsing
-Options -Indexes
+# Disable directory browsing (commented for shared hosting compatibility)
+# Options -Indexes
 
 # Protect sensitive root files from any direct HTTP access
 <FilesMatch "^(\.env|\.env\..*|composer\.(json|lock)|.*\.sql|.*\.log|crontab_setup\.txt)$">

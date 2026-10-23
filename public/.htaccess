@@ -1,5 +1,5 @@
-# Disable directory indexing
-Options -Indexes
+# Disable directory indexing (commented for shared hosting compatibility)
+# Options -Indexes
 
 # Security Headers
 <IfModule mod_headers.c>
