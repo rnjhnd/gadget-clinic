@@ -6,6 +6,11 @@ require_once dirname(__DIR__) . '/includes/twig.php';
 
 $router = new \Bramus\Router\Router();
 
+// Synchronize base path with APP_URL to handle domain roots and subdirectories
+$app_url_path = parse_url($_ENV['APP_URL'] ?? '', PHP_URL_PATH);
+$base_path = ($app_url_path !== null && trim($app_url_path, '/') !== '') ? '/' . trim($app_url_path, '/') : '/';
+$router->setBasePath($base_path);
+
 // Views
 $router->get('/', 'App\Controllers\HomeController@index');
 $router->get('/dashboard', 'App\Controllers\DashboardController@index');
