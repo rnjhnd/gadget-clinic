@@ -94,9 +94,12 @@ $(document).ready(function () {
                             fetchAndRenderAdminSlots(dateStr);
                         }
                     }
-                };
                 flatpickr("#rescheduleDate", dateConfig);
-                flatpickr("#newBlackoutDate", dateConfig);
+
+                const blackoutDateConfig = Object.assign({}, dateConfig, {
+                    altFormat: "M j, Y"
+                });
+                flatpickr("#newBlackoutDate", blackoutDateConfig);
             }
 
             // Dedicated Search Input Hook
