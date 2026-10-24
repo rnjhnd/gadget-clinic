@@ -325,7 +325,7 @@ $(document).ready(function () {
                         </button>
                     </div>
                 `);
-                $('.deck-wrapper').prepend(banner);
+                $('body').append(banner);
                 banner.fadeIn(300);
                 setTimeout(function() {
                     banner.fadeOut(500, function() { $(this).remove(); });
@@ -346,7 +346,7 @@ $(document).ready(function () {
                         </button>
                     </div>
                 `);
-                $('.deck-wrapper').prepend(banner);
+                $('body').append(banner);
                 banner.fadeIn(300);
                 setTimeout(function() {
                     banner.fadeOut(500, function() { $(this).remove(); });
@@ -397,7 +397,7 @@ $(document).ready(function () {
                         </div>
                     </div>
                 `);
-                $('.deck-wrapper').prepend(banner);
+                $('body').append(banner);
                 banner.fadeIn(300);
             }
 
