@@ -11,7 +11,7 @@
         <div class="code">HTTP 403 / RESTRICTED</div>
         <h1>Technician Deck Access Denied</h1>
         <p>Your current session does not hold administrative clearance to access the Gadget Clinic command console.</p>
-        <a href="<?= htmlspecialchars($_ENV['APP_URL'] ?? '') ?>/dashboard">Return to Client Portal</a>
+        <a href="<?= htmlspecialchars($_ENV['APP_URL'] ?? '') ?>/dashboard">Return to Repair Portal</a>
     </div>
 </body>
 </html>

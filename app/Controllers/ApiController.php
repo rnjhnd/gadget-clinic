@@ -219,7 +219,7 @@ class ApiController extends BaseController {
             
             if (!empty($email)) {
                 $email_title = "Quotation Issued";
-                $email_body = "Hi {$req_data['name']},<br><br>A quotation of <strong>PHP " . number_format($amount, 2) . "</strong> has been issued for your repair.<br><br>Please review and respond to the quote in the Client Portal.";
+                $email_body = "Hi {$req_data['name']},<br><br>A quotation of <strong>PHP " . number_format($amount, 2) . "</strong> has been issued for your repair.<br><br>Please review and respond to the quote in the Repair Portal.";
                 $htmlContent = get_branded_email_html($email_title, $email_body, 'View Quote', $_ENV['APP_URL'] . '/dashboard');
                 
                 $email_result = send_app_email($email, $email_title . ' - Gadget Clinic', $htmlContent);
