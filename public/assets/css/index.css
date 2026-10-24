@@ -351,14 +351,10 @@ body.auth-page {
     margin: 0 auto;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     font-size: 12.5px;
     color: var(--text-muted);
-}
-
-.footer-brand {
-    font-weight: 700;
-    color: var(--text-primary);
+    text-align: center;
 }
 
 /* Responsive Adjustments */
@@ -382,8 +378,6 @@ body.auth-page {
     }
 
     .footer-inner {
-        flex-direction: column;
-        gap: 10px;
         text-align: center;
     }
 }
