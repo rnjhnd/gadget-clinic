@@ -368,12 +368,6 @@
             .brand-group {
                 gap: 8px;
             }
-            .btn-admin {
-                padding: 7px 10px;
-            }
-            .btn-admin .btn-text {
-                display: none; /* Icon-only button on mobile screens */
-            }
             .user-profile-trigger .user-name {
                 display: none; /* Show avatar + chevron on mobile screens */
             }
