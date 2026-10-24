@@ -451,9 +451,11 @@
             </form>
         </div>
     </div>
-    <!-- Blackout Dates Modal -->
+    <!-- Blackout Dates Modal (shared overlay — cards swap in-place, no backdrop flash) -->
     <div id="blackoutModal" class="monolith-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="blackoutModalTitle">
-        <div class="monolith-modal-card" style="max-width: 500px;">
+
+        <!-- Primary: Manage panel -->
+        <div id="blackoutManageCard" class="monolith-modal-card blackout-card-panel" style="max-width: 500px;">
             <div class="modal-header-row">
                 <div class="modal-icon-badge" style="color: var(--text-primary); background: var(--bg-subtle); border-color: var(--border);">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -514,11 +516,9 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Delete Blackout Modal -->
-    <div id="deleteBlackoutModal" class="monolith-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="deleteBlackoutModalTitle">
-        <div class="monolith-modal-card" style="max-width: 400px; text-align: center; padding: 32px 24px;">
+        <!-- Secondary: Delete confirmation panel (swaps in without closing the shared overlay) -->
+        <div id="blackoutDeleteCard" class="monolith-modal-card blackout-card-panel blackout-delete-panel" style="max-width: 400px; text-align: center; padding: 32px 24px;" aria-labelledby="deleteBlackoutModalTitle">
             <div style="display: flex; justify-content: center; margin-bottom: 16px;">
                 <div class="modal-icon-badge" style="color: #ef4444; background: #fef2f2; border-color: #fecaca; width: 48px; height: 48px;">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

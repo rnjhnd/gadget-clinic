@@ -1497,6 +1497,26 @@ body {
     animation: modalStaticPulse 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
+/* Blackout modal: two cards share one overlay; only one visible at a time */
+.blackout-card-panel {
+    transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.blackout-delete-panel {
+    display: none;
+    opacity: 0;
+    transform: scale(0.96) translateY(4px);
+    pointer-events: none;
+}
+
+.blackout-delete-panel.is-showing {
+    display: block;
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    pointer-events: auto;
+    animation: modalScaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 .modal-header-row {
     display: flex;
     align-items: center;
