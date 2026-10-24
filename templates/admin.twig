@@ -158,13 +158,18 @@
 
         <!-- Master Registry Tickets Card -->
         <section class="ledger-card">
-            <div class="card-header">
-                <div class="section-index">Master Tickets / Dispatch</div>
-                <h1 class="card-title">Service Request Central</h1>
-                <p class="card-desc">Review customer credentials, verify supporting photos/warranty, and adjust repair statuses in real-time.</p>
+            <div class="card-header card-header--with-action">
+                <div class="card-header-main">
+                    <div class="section-index">Master Tickets / Dispatch</div>
+                    <h1 class="card-title">Service Request Central</h1>
+                    <p class="card-desc">Review customer credentials, verify supporting photos/warranty, and adjust repair statuses in real-time.</p>
+                </div>
+                <div class="table-search-box">
+                    <input type="search" id="adminSearchInput" placeholder="Search requests..." autocomplete="off">
+                </div>
             </div>
 
-            <!-- Unified Controls Toolbar: Status Pills (Left) + Search (Right) -->
+            <!-- Controls Toolbar: Status Pills -->
             <div class="table-toolbar">
                 <div class="filter-segmented-bar" role="tablist">
                     <button type="button" class="tab-pill active" data-status="">
@@ -195,10 +200,6 @@
                         <span>Cancelled</span>
                         <span class="pill-counter" id="tab-count-cancelled">{{ count_cancelled }}</span>
                     </button>
-                </div>
-
-                <div class="table-search-box">
-                    <input type="search" id="adminSearchInput" placeholder="Search requests..." autocomplete="off">
                 </div>
             </div>
 

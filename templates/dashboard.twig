@@ -324,17 +324,10 @@
 
             <!-- Column 2: Active Requests & Service Drop-off Stubs -->
             <section class="studio-card">
-                <div class="card-header card-header--with-action">
-                    <div class="card-header-main">
-                        <div class="section-index">02 / Tickets</div>
-                        <h2 class="card-title">Service Registry</h2>
-                        <p class="card-desc">Review your scheduled timeline, documents, and download digital drop-off stubs.</p>
-                    </div>
-                    {% if all_requests is not empty %}
-                        <div class="table-search-box">
-                            <input type="search" id="dashboardSearchInput" placeholder="Search requests..." autocomplete="off">
-                        </div>
-                    {% endif %}
+                <div class="card-header" style="margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
+                    <div class="section-index">02 / Tickets</div>
+                    <h2 class="card-title">Service Registry</h2>
+                    <p class="card-desc">Review your scheduled timeline, documents, and download digital drop-off stubs.</p>
                 </div>
 
                 {% if all_requests is empty %}
