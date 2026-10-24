@@ -218,23 +218,23 @@
             color: #e11d48;
         }
 
-        /* Responsive Header Adaptations */
-        @media (max-width: 1040px) {
+        /* Responsive Header Adaptations (Graduated 3-Tier Hierarchy) */
+        @media (max-width: 940px) {
             .header-container {
                 padding: 14px 20px;
             }
             .deck-badge {
-                display: none; /* Hide decorative badge on medium screens to preserve room for actions */
+                display: none; /* Hide decorative badge first, preserving full button labels for tablets (e.g. 769px) */
             }
             .user-nav {
                 gap: 10px;
             }
             .user-name {
-                max-width: 90px;
+                max-width: 85px;
             }
         }
 
-        @media (max-width: 880px) {
+        @media (max-width: 680px) {
             .header-container {
                 padding: 12px 16px;
             }
@@ -245,13 +245,13 @@
                 padding: 7px 10px;
             }
             .btn-client-view .btn-text {
-                display: none; /* Clean icon button */
+                display: none; /* Collapse to sleek icon buttons when screen is too narrow */
             }
             .btn-logout {
                 padding: 7px 8px;
             }
             .btn-logout .btn-text {
-                display: none; /* Clean icon button */
+                display: none; /* Collapse to icon button */
             }
             .user-pill {
                 padding: 2px;
@@ -259,7 +259,7 @@
                 border-color: transparent;
             }
             .user-name {
-                display: none; /* Clean avatar circle */
+                display: none; /* Avatar circle only */
             }
         }
 
