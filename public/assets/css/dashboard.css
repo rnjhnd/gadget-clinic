@@ -2305,25 +2305,21 @@
 
         /* Table Architecture - Studio Monolith Skin (Matching Admin) */
         .dt-layout-table, .dataTables_scrollBody {
-            overflow: visible !important;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
             position: relative;
-        }
-
-        @media (max-width: 860px) {
-            .dt-layout-table, .dataTables_scrollBody {
-                overflow-x: auto !important;
-                -webkit-overflow-scrolling: touch;
-            }
         }
 
         table.studio-table {
             width: 100% !important;
+            min-width: 580px;
             border-collapse: separate !important;
             border-spacing: 0 !important;
             margin-top: 8px;
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            overflow: visible !important;
         }
 
         table.studio-table thead tr:first-child th:first-child {

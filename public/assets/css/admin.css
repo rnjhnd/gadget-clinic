@@ -960,14 +960,11 @@
 
         /* Table Architecture - Strictly Unified Alignments */
         .dt-layout-table, .dataTables_scrollBody {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
             position: relative;
-        }
-
-        @media (max-width: 1024px) {
-            .dt-layout-table, .dataTables_scrollBody {
-                overflow-x: auto !important;
-                -webkit-overflow-scrolling: touch;
-            }
         }
 
         table.studio-admin-table {
