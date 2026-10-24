@@ -965,10 +965,10 @@
             width: 100%;
             max-width: 100%;
             overflow-x: auto !important;
+            overflow-y: hidden !important;
             -webkit-overflow-scrolling: touch;
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            overflow: hidden !important;
             position: relative;
             margin-top: 8px;
         }
