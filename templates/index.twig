@@ -12,6 +12,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
+    <!-- Favicon Suite -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/images/favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/images/apple-touch-icon.png') }}">
+
     <link rel="stylesheet" href="{{ asset('assets/css/index.css') }}">
 </head>
 
@@ -20,7 +25,12 @@
     <!-- Minimalist Studio Header -->
     <header>
         <a href="" class="brand" id="brand-identity">
-            <div class="brand-symbol">G</div>
+            <div class="brand-symbol" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 7A8 8 0 1 0 20 12h-7" />
+                    <path d="M16 9v6" />
+                </svg>
+            </div>
             <span class="brand-title">Gadget Clinic</span>
         </a>
 

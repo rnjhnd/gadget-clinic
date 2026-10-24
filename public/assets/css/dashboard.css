@@ -85,9 +85,12 @@
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 13px;
-            font-weight: 800;
-            font-family: 'Space Mono', monospace;
+            flex-shrink: 0;
+        }
+
+        .brand-symbol svg {
+            display: block;
+            flex-shrink: 0;
         }
 
         .brand-title {

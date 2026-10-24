@@ -18,6 +18,11 @@
     <!-- Flatpickr Core Styles -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
+    <!-- Favicon Suite -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/images/favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/images/apple-touch-icon.png') }}">
+
     <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
 </head>
 
@@ -28,7 +33,12 @@
         <div class="header-container">
             <div class="brand-group">
                 <a href="dashboard" class="brand">
-                    <div class="brand-symbol">G</div>
+                    <div class="brand-symbol" aria-hidden="true">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 7A8 8 0 1 0 20 12h-7" />
+                            <path d="M16 9v6" />
+                        </svg>
+                    </div>
                     <span class="brand-title">Gadget Clinic</span>
                 </a>
                 <span class="header-tag">Repair Portal</span>
