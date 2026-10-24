@@ -558,6 +558,8 @@
         .dot-amber { background-color: #f59e0b; }
         .dot-zinc { background-color: #71717a; }
         .dot-blue { background-color: #3b82f6; }
+        .dot-sky { background-color: #0ea5e9; }
+        .dot-purple { background-color: #a855f7; }
 
         /* Master Ledger Container Card */
         .ledger-card {

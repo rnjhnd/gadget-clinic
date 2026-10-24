@@ -139,20 +139,20 @@
 
             <div class="kpi-card">
                 <div class="kpi-label">
-                    <span>Confirmed Slots</span>
-                    <span class="indicator-dot dot-green"></span>
+                    <span>On Workbench</span>
+                    <span class="indicator-dot dot-sky"></span>
                 </div>
-                <div class="kpi-val" id="kpi-confirmed">{{ '%02d'|format(count_confirmed) }}</div>
-                <div class="kpi-sub">Active & SMS notified</div>
+                <div class="kpi-val" id="kpi-in-progress">{{ '%02d'|format(count_in_progress) }}</div>
+                <div class="kpi-sub">Active repairs in progress</div>
             </div>
 
             <div class="kpi-card">
                 <div class="kpi-label">
-                    <span>Cancelled</span>
-                    <span class="indicator-dot dot-zinc"></span>
+                    <span>Ready for Pickup</span>
+                    <span class="indicator-dot dot-purple"></span>
                 </div>
-                <div class="kpi-val" id="kpi-cancelled">{{ '%02d'|format(count_cancelled) }}</div>
-                <div class="kpi-sub">Released calendar slots</div>
+                <div class="kpi-val" id="kpi-for-pickup">{{ '%02d'|format(count_for_pickup) }}</div>
+                <div class="kpi-sub">Repaired &amp; awaiting client</div>
             </div>
         </section>
 
