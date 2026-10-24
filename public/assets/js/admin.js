@@ -735,6 +735,25 @@ $(document).ready(function () {
                 }
             });
 
+            // User Profile Dropdown Toggle Logic
+            $(document).on('click', '#userProfileTrigger', function (e) {
+                e.stopPropagation();
+                const container = $(this).closest('.user-dropdown-container');
+                const isOpen = container.hasClass('is-open');
+                $('.user-dropdown-container').removeClass('is-open');
+                $('#userProfileTrigger').attr('aria-expanded', !isOpen);
+                if (!isOpen) {
+                    container.addClass('is-open');
+                }
+            });
+
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest('.user-dropdown-container').length) {
+                    $('.user-dropdown-container').removeClass('is-open');
+                    $('#userProfileTrigger').attr('aria-expanded', 'false');
+                }
+            });
+
             function escapeHtml(str) {
                 if (!str) return '';
                 return $('<div>').text(str).html();
@@ -1330,6 +1349,12 @@ $(document).ready(function () {
                 if (e.key === 'Escape') {
                     // Let Flatpickr handle closing its own calendar dropdown first if open
                     if ($('.flatpickr-calendar.open').length > 0) {
+                        return;
+                    }
+
+                    if ($('.user-dropdown-container.is-open').length > 0) {
+                        $('.user-dropdown-container').removeClass('is-open');
+                        $('#userProfileTrigger').attr('aria-expanded', 'false');
                         return;
                     }
 

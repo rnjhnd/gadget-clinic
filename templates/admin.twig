@@ -62,15 +62,47 @@
                     <span class="btn-text">Client Portal</span>
                 </a>
 
-                <div class="user-pill" title="{{ user.name }}">
-                    <div class="user-avatar">{{ initials }}</div>
-                    <span class="user-name">{{ user.name }}</span>
-                </div>
+                <!-- User Profile Dropdown Menu -->
+                <div class="user-dropdown-container">
+                    <button type="button" class="user-profile-trigger" id="userProfileTrigger" aria-expanded="false" aria-haspopup="true" title="Account Menu">
+                        <div class="user-avatar">{{ initials }}</div>
+                        <span class="user-name">{{ user.name }}</span>
+                        <svg class="dropdown-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
 
-                <a href="logout" class="btn-logout" title="Sign out of Gadget Clinic" aria-label="Sign out">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                    <span class="btn-text">Sign Out</span>
-                </a>
+                    <div class="user-profile-dropdown" id="userProfileDropdown" role="menu" aria-labelledby="userProfileTrigger">
+                        <div class="dropdown-user-header">
+                            <div class="dropdown-avatar">{{ initials }}</div>
+                            <div class="dropdown-user-meta">
+                                <span class="dropdown-user-name">{{ user.name }}</span>
+                                <span class="dropdown-user-email">{{ user.email }}</span>
+                                <span class="dropdown-role-badge">Command Deck Admin</span>
+                            </div>
+                        </div>
+
+                        <div class="dropdown-divider"></div>
+
+                        <div class="dropdown-menu-list">
+                            <a href="dashboard" class="dropdown-menu-item">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                                    <polyline points="12 19 5 12 12 5"></polyline>
+                                </svg>
+                                <span>Client Portal</span>
+                            </a>
+                            <a href="logout" class="dropdown-menu-item text-danger">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg>
+                                <span>Sign Out</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </header>

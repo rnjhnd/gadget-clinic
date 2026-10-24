@@ -854,14 +854,32 @@ $(document).ready(function () {
                 }
             });
 
-            // Close kebab when clicking outside or scrolling
-            $(document).on('click', function () {
+            // User Profile Dropdown Toggle Logic
+            $(document).on('click', '#userProfileTrigger', function (e) {
+                e.stopPropagation();
+                const container = $(this).closest('.user-dropdown-container');
+                const isOpen = container.hasClass('is-open');
+                $('.user-dropdown-container').removeClass('is-open');
+                $('#userProfileTrigger').attr('aria-expanded', !isOpen);
+                if (!isOpen) {
+                    container.addClass('is-open');
+                }
+            });
+
+            // Close dropdowns when clicking outside
+            $(document).on('click', function (e) {
                 $('.kebab-menu-container').removeClass('is-open dropup');
+                if (!$(e.target).closest('.user-dropdown-container').length) {
+                    $('.user-dropdown-container').removeClass('is-open');
+                    $('#userProfileTrigger').attr('aria-expanded', 'false');
+                }
             });
 
             $(document).on('keydown', function (e) {
                 if (e.key === 'Escape') {
                     $('.kebab-menu-container').removeClass('is-open dropup');
+                    $('.user-dropdown-container').removeClass('is-open');
+                    $('#userProfileTrigger').attr('aria-expanded', 'false');
                 }
             });
 
