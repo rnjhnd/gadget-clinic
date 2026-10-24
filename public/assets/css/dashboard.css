@@ -2109,13 +2109,14 @@
             color: var(--text-primary);
         }
 
-        /* Top Bar Layout (Search & Length) */
-        .dt-container .dt-layout-row,
+        /* Top Bar Layout (Search & Length) — outside the table frame */
+        .dt-container > .dt-layout-row,
         .dataTables_wrapper .dataTables_filter {
             margin-bottom: 16px;
         }
 
-        .dt-container .dt-layout-row:last-child {
+        /* Pagination row — outside the table frame */
+        .dt-container > .dt-layout-row:last-child {
             margin-top: 16px;
             margin-bottom: 0;
             display: flex;
@@ -2123,6 +2124,11 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
+        }
+
+        /* Rows inside .dt-layout-table (the actual table row) — no margin bleeding */
+        .dt-layout-table .dt-layout-row {
+            margin: 0 !important;
         }
 
         /* Search Input Styling */
