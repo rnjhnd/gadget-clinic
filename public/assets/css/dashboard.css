@@ -60,12 +60,14 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 12px;
         }
 
         .brand-group {
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 20px;
+            flex-shrink: 0;
         }
 
         .brand {
@@ -74,6 +76,7 @@
             gap: 10px;
             text-decoration: none;
             color: var(--text-primary);
+            white-space: nowrap;
         }
 
         .brand-symbol {
@@ -97,6 +100,7 @@
             font-size: 18px;
             font-weight: 800;
             letter-spacing: -0.04em;
+            white-space: nowrap;
         }
 
         .header-tag {
@@ -109,12 +113,15 @@
             border: 1px solid var(--border);
             border-radius: var(--radius-pill);
             color: var(--text-muted);
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .user-nav {
             display: flex;
             align-items: center;
             gap: 14px;
+            flex-shrink: 0;
         }
 
         .user-pill {
@@ -128,6 +135,16 @@
             font-size: 13px;
             font-weight: 500;
             color: var(--text-primary);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .user-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 140px;
+            display: inline-block;
         }
 
         .user-avatar {
@@ -142,11 +159,13 @@
             font-size: 11px;
             font-weight: 700;
             font-family: 'Space Mono', monospace;
+            flex-shrink: 0;
         }
 
         .btn-admin {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 6px;
             padding: 8px 16px;
             font-size: 12px;
@@ -158,6 +177,8 @@
             border-radius: var(--radius-pill);
             transition: all 0.2s ease;
             line-height: 1;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .btn-admin svg {
@@ -173,6 +194,7 @@
         .btn-logout {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 6px;
             font-size: 13px;
             font-weight: 500;
@@ -180,8 +202,10 @@
             text-decoration: none;
             padding: 6px 12px;
             border-radius: var(--radius-sm);
-            transition: color 0.2s ease;
+            transition: color 0.2s ease, background 0.2s ease;
             line-height: 1;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .btn-logout svg {
@@ -191,6 +215,67 @@
 
         .btn-logout:hover {
             color: #e11d48;
+        }
+
+        /* Responsive Header Adaptations */
+        @media (max-width: 992px) {
+            .header-container {
+                padding: 14px 20px;
+            }
+            .user-nav {
+                gap: 10px;
+            }
+            .user-name {
+                max-width: 85px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 12px 16px;
+            }
+            .brand-group {
+                gap: 8px;
+            }
+            .header-tag {
+                display: none; /* Hide Repair Portal tag to prioritize navigation actions */
+            }
+            .btn-admin {
+                padding: 7px 9px;
+            }
+            .btn-admin .btn-text {
+                display: none; /* Clean icon button */
+            }
+            .btn-logout {
+                padding: 7px 8px;
+            }
+            .btn-logout .btn-text {
+                display: none; /* Clean icon button */
+            }
+            .user-pill {
+                padding: 2px;
+                background-color: transparent;
+                border-color: transparent;
+            }
+            .user-name {
+                display: none; /* Clean avatar circle */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-container {
+                padding: 10px 12px;
+            }
+            .brand-title {
+                font-size: 16px;
+            }
+            .user-nav {
+                gap: 6px;
+            }
+            .brand-symbol {
+                width: 26px;
+                height: 26px;
+            }
         }
 
         /* Main Workspace Container */
