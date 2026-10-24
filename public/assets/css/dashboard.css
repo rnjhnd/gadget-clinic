@@ -581,12 +581,8 @@
             display: flex;
             align-items: center;
             margin-bottom: 18px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .table-toolbar::-webkit-scrollbar {
-            display: none;
+            width: 100%;
+            max-width: 100%;
         }
 
         .filter-segmented-bar {
@@ -596,7 +592,16 @@
             border: 1px solid var(--border);
             padding: 4px;
             border-radius: var(--radius-pill);
-            flex-shrink: 0;
+            max-width: 100%;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            -webkit-overflow-scrolling: touch;
+            box-sizing: border-box;
+        }
+
+        .filter-segmented-bar::-webkit-scrollbar {
+            display: none;
         }
 
         /* Dedicated Search Input */
@@ -2019,14 +2024,13 @@
             color: var(--text-primary);
         }
 
-        /* Unified Controls Toolbar: Status Pills (Left) + Search (Right) */
+        /* Unified Controls Toolbar: Status Pills */
         .table-toolbar {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 16px;
             margin-bottom: 20px;
-            flex-wrap: wrap;
+            width: 100%;
+            max-width: 100%;
         }
 
         .filter-segmented-bar {
@@ -2036,10 +2040,12 @@
             border: 1px solid var(--border);
             padding: 4px;
             border-radius: var(--radius-pill);
+            max-width: 100%;
             overflow-x: auto;
             scrollbar-width: none;
             -ms-overflow-style: none;
             -webkit-overflow-scrolling: touch;
+            box-sizing: border-box;
         }
         
         .filter-segmented-bar::-webkit-scrollbar {
