@@ -38,15 +38,26 @@ class DashboardController extends BaseController {
         $requests = $requestModel->getByUserId($user_id);
 
         $total_count = count($requests);
-        $confirmed_count = 0;
         $pending_count = 0;
+        $confirmed_count = 0;
+        $in_progress_count = 0;
+        $for_pickup_count = 0;
+        $completed_count = 0;
         $cancelled_count = 0;
         
         foreach($requests as $r) {
-            if ($r['status'] === 'confirmed') $confirmed_count++;
-            if ($r['status'] === 'pending') $pending_count++;
-            if ($r['status'] === 'cancelled') $cancelled_count++;
+            match($r['status']) {
+                'pending'     => $pending_count++,
+                'confirmed'   => $confirmed_count++,
+                'in_progress' => $in_progress_count++,
+                'for_pickup'  => $for_pickup_count++,
+                'completed'   => $completed_count++,
+                'cancelled'   => $cancelled_count++,
+                default       => null,
+            };
         }
+
+        $scheduled_count = $pending_count + $confirmed_count;
 
         $this->render('dashboard.twig', [
             'user' => $user,
@@ -55,8 +66,12 @@ class DashboardController extends BaseController {
             'error_message' => $error_message,
             'all_requests' => $requests,
             'total_count' => $total_count,
-            'confirmed_count' => $confirmed_count,
+            'scheduled_count' => $scheduled_count,
             'pending_count' => $pending_count,
+            'confirmed_count' => $confirmed_count,
+            'in_progress_count' => $in_progress_count,
+            'for_pickup_count' => $for_pickup_count,
+            'completed_count' => $completed_count,
             'cancelled_count' => $cancelled_count
         ]);
     }

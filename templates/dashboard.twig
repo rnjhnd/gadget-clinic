@@ -131,41 +131,37 @@
             <div class="kpi-card">
                 <div class="kpi-label">
                     <span>Total Bookings</span>
-                    <span class="indicator-dot dot-zinc"></span>
+                    <span class="indicator-dot dot-blue"></span>
                 </div>
                 <div class="kpi-val">{{ '%02d'|format(total_count) }}</div>
-                <div class="kpi-sub">Lifetime devices checked-in</div>
+                <div class="kpi-sub">Lifetime devices registered</div>
             </div>
 
             <div class="kpi-card">
                 <div class="kpi-label">
-                    <span>Confirmed</span>
-                    <span class="indicator-dot dot-green"></span>
-                </div>
-                <div class="kpi-val">{{ '%02d'|format(confirmed_count) }}</div>
-                <div class="kpi-sub">Verified & ready for check-in</div>
-            </div>
-
-            <div class="kpi-card">
-                <div class="kpi-label">
-                    <span>Awaiting Review</span>
+                    <span>Scheduled</span>
                     <span class="indicator-dot dot-amber"></span>
                 </div>
-                <div class="kpi-val">{{ '%02d'|format(pending_count) }}</div>
-                <div class="kpi-sub">Queued for technician review</div>
+                <div class="kpi-val">{{ '%02d'|format(scheduled_count) }}</div>
+                <div class="kpi-sub">Pending review &amp; verified slots</div>
             </div>
 
             <div class="kpi-card">
                 <div class="kpi-label">
-                    <span>Service Center</span>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <span>Under Repair</span>
+                    <span class="indicator-dot dot-sky"></span>
                 </div>
-                <div class="kpi-val kpi-val--time">
-                    <span>9:00 AM</span>
-                    <span class="kpi-time-sep">—</span>
-                    <span>5:00 PM</span>
+                <div class="kpi-val">{{ '%02d'|format(in_progress_count) }}</div>
+                <div class="kpi-sub">Active on technician workbench</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">
+                    <span>Ready for Pickup</span>
+                    <span class="indicator-dot dot-purple"></span>
                 </div>
-                <div class="kpi-sub">Mon - Fri • 30-min intervals</div>
+                <div class="kpi-val">{{ '%02d'|format(for_pickup_count) }}</div>
+                <div class="kpi-sub">Repaired &amp; waiting for you</div>
             </div>
         </section>
 
@@ -177,7 +173,7 @@
                 <div class="card-header">
                     <div class="section-index">01 / Request</div>
                     <h2 class="card-title">Book a Repair Service</h2>
-                    <p class="card-desc">Select a drop-off slot. Instant SMS alerts will be transmitted.</p>
+                    <p class="card-desc">Select a drop-off slot (Mon &ndash; Fri &bull; 9:00 AM &ndash; 5:00 PM). Instant SMS alerts will be transmitted.</p>
                 </div>
 
                 <form method="POST" action="actions/book" enctype="multipart/form-data" class="booking-form" id="bookingForm" novalidate>
@@ -360,6 +356,18 @@
                             <button type="button" class="tab-pill" data-status="confirmed">
                                 <span>Confirmed</span>
                                 <span class="pill-counter" id="tab-count-confirmed">{{ confirmed_count }}</span>
+                            </button>
+                            <button type="button" class="tab-pill" data-status="in_progress">
+                                <span>In Progress</span>
+                                <span class="pill-counter" id="tab-count-in_progress">{{ in_progress_count }}</span>
+                            </button>
+                            <button type="button" class="tab-pill" data-status="for_pickup">
+                                <span>For Pickup</span>
+                                <span class="pill-counter" id="tab-count-for_pickup">{{ for_pickup_count }}</span>
+                            </button>
+                            <button type="button" class="tab-pill" data-status="completed">
+                                <span>Completed</span>
+                                <span class="pill-counter" id="tab-count-completed">{{ completed_count }}</span>
                             </button>
                             <button type="button" class="tab-pill" data-status="cancelled">
                                 <span>Cancelled</span>
