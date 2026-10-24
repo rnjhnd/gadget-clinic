@@ -874,25 +874,18 @@ $(document).ready(function () {
                 $('#deleteBlackoutId').val(id);
                 $('#deleteBlackoutDateText').text(dateText);
                 
-                // Swap cards inside the shared overlay — backdrop stays alive, no blur flash
-                $('#blackoutManageCard').css({ opacity: 0, 'pointer-events': 'none' });
-                $('#blackoutDeleteCard').addClass('is-showing');
+                // Open confirmation modal overlapping on top of blackoutModal (which stays active)
+                openModal('#deleteBlackoutModal');
             });
-
-            function closeDeleteBlackoutCard() {
-                $('#blackoutDeleteCard').removeClass('is-showing');
-                $('#blackoutManageCard').css({ opacity: '', 'pointer-events': '' });
-            }
 
             $('.dismiss-delete-blackout').on('click', function() {
-                closeDeleteBlackoutCard();
+                $('#deleteBlackoutModal').removeClass('is-active');
             });
 
-            // Dismiss delete confirmation on backdrop click (return to manage panel)
-            $('#blackoutModal').on('click', function(e) {
-                if ($(e.target).is('#blackoutModal') && $('#blackoutDeleteCard').hasClass('is-showing')) {
-                    closeDeleteBlackoutCard();
-                    return;
+            // Dismiss delete confirmation on backdrop click (leaves parent blackoutModal open)
+            $('#deleteBlackoutModal').on('click', function(e) {
+                if ($(e.target).is('#deleteBlackoutModal')) {
+                    $('#deleteBlackoutModal').removeClass('is-active');
                 }
             });
 
@@ -914,8 +907,7 @@ $(document).ready(function () {
                     },
                     success: function(res) {
                         btn.prop('disabled', false).text(originalText);
-                        // Swap back to manage panel — still inside same overlay, no backdrop flash
-                        closeDeleteBlackoutCard();
+                        $('#deleteBlackoutModal').removeClass('is-active');
                         
                         if (res && res.success) {
                             loadBlackoutDates();
@@ -925,7 +917,7 @@ $(document).ready(function () {
                     },
                     error: function() {
                         btn.prop('disabled', false).text(originalText);
-                        closeDeleteBlackoutCard();
+                        $('#deleteBlackoutModal').removeClass('is-active');
                         showAjaxErrorBanner('A server error occurred.');
                     }
                 });
@@ -1346,12 +1338,12 @@ $(document).ready(function () {
                         return;
                     }
 
+                    if ($('#deleteBlackoutModal').hasClass('is-active')) {
+                        $('#deleteBlackoutModal').removeClass('is-active');
+                        return;
+                    }
+
                     if ($('#blackoutModal').hasClass('is-active')) {
-                        // If the delete confirmation card is showing, Escape dismisses it first
-                        if ($('#blackoutDeleteCard').hasClass('is-showing')) {
-                            closeDeleteBlackoutCard();
-                            return;
-                        }
                         if (isBlackoutFormDirty()) {
                             pulseModalCard('#blackoutModal');
                             return;
