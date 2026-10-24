@@ -36,7 +36,7 @@
 
         <div class="nav-status">
             <span class="dot-pulse"></span>
-            <span>Service Portal</span>
+            <span>Repair Portal</span>
         </div>
     </header>
 
@@ -50,29 +50,24 @@
                 <!-- Brand Badge -->
                 <div class="auth-icon-badge">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 7A8 8 0 1 0 20 12h-7" />
-                        <path d="M16 9v6" />
+                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
                     </svg>
                 </div>
 
                 <div class="auth-text-header">
                     <h1 class="auth-title">Sign in to your account</h1>
-                    <p class="auth-description">
-                        Schedule a device drop-off, approve diagnostic quotes, and track your repair status in real time.
-                    </p>
+                    <p class="auth-description">Book repairs, track your device, review quotes.</p>
                 </div>
 
-                <!-- Error Message Banner -->
-                {% if error_message %}
-                    <div class="auth-error-banner" role="alert">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                        </svg>
-                        <span>{{ error_message }}</span>
-                    </div>
-                {% endif %}
+                <!-- Error Message Banner (server-rendered + JS-targetable) -->
+                <div class="auth-error-banner" id="auth-error-banner" role="alert" {% if not error_message %}style="display:none;"{% endif %}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span id="auth-error-text">{{ error_message }}</span>
+                </div>
 
                 <!-- Google Sign-In Action -->
                 <div class="auth-actions">
