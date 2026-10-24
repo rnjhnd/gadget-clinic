@@ -2304,35 +2304,35 @@
         }
 
         /* Table Architecture - Studio Monolith Skin (Matching Admin) */
-        .dt-layout-table, .dataTables_scrollBody {
+        /* Table Architecture — Fixed Frame Pattern
+           The outer .dt-layout-table is the visible "frame" (border + radius + overflow:hidden).
+           Only the inner <table> content scrolls horizontally; the frame stays fixed. */
+        .dt-layout-table {
             width: 100%;
             max-width: 100%;
             overflow-x: auto !important;
             -webkit-overflow-scrolling: touch;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden !important;
             position: relative;
+            margin-top: 8px;
+        }
+
+        .dataTables_scrollBody {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
         }
 
         table.studio-table {
             width: 100% !important;
             min-width: 580px;
-            border-collapse: separate !important;
+            border-collapse: collapse !important;
             border-spacing: 0 !important;
-            margin-top: 8px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-        }
-
-        table.studio-table thead tr:first-child th:first-child {
-            border-top-left-radius: var(--radius-md);
-        }
-        table.studio-table thead tr:first-child th:last-child {
-            border-top-right-radius: var(--radius-md);
-        }
-        table.studio-table tbody tr:last-child td:first-child {
-            border-bottom-left-radius: var(--radius-md);
-        }
-        table.studio-table tbody tr:last-child td:last-child {
-            border-bottom-right-radius: var(--radius-md);
+            border: none;
+            border-radius: 0;
         }
 
         table.studio-table thead th {
